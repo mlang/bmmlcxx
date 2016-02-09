@@ -166,6 +166,13 @@ REGISTER_DEFINITION(rest_type, qname("rest_type"), content::simple);
 REGISTER_DEFINITION(rhythmic_group, qname("rhythmic_group"), content::simple);
 REGISTER_DEFINITION(right_string_fingering, qname("right_string_fingering"), content::simple);
 REGISTER_DEFINITION(score, qname("score"), content::complex);
+
+shared_ptr<bmml::score_header> bmml::score::header() const {
+  return find_element<bmml::score_header>();
+}
+shared_ptr<bmml::score_data> bmml::score::data() const {
+  return find_element<bmml::score_data>();
+}
 REGISTER_DEFINITION(score_data, qname("score_data"), content::complex);
 REGISTER_DEFINITION(score_header, qname("score_header"), content::complex);
 REGISTER_DEFINITION(segno, qname("segno"), content::simple);
@@ -200,4 +207,3 @@ REGISTER_DEFINITION(tuplet_ref, qname("tuplet_ref"), content::empty);
 REGISTER_DEFINITION(tuplets, qname("tuplets"), content::complex);
 REGISTER_DEFINITION(unknown, qname("unknown"), content::simple);
 REGISTER_DEFINITION(value_prefix, qname("value_prefix"), content::simple);
-

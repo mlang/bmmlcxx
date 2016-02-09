@@ -1627,6 +1627,31 @@ public:
 
 };
 
+class score_header;
+class score_data;
+
+
+class score : public dom::element {
+  REGISTER_DECLARATION(score);
+
+public:
+  score(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+
+  std::string version() const {
+    return attributes().find(xml::qname("version"))->second;
+  }
+  void version(std::string const& value) {
+    attributes()[xml::qname("version")] = value;
+  }
+
+
+  std::shared_ptr<score_header> header() const;
+  std::shared_ptr<score_data> data() const;
+
+};
+
 class score_data : public dom::element {
   REGISTER_DECLARATION(score_data);
 
@@ -2259,24 +2284,6 @@ public:
     attributes()[xml::qname("id")] = value;
   }
 
-};
-
-class score : public dom::element {
-  REGISTER_DECLARATION(score);
-public:
-
-  score(xml::parser& p, bool start_end = true) : element(p, start_end) {
-  }
-
-  std::string const& version() const {
-    return attributes().find(xml::qname("version"))->second;
-  }
-  void version(std::string const& value) {
-    attributes()[xml::qname("version")] = value;
-  }
-
-  std::shared_ptr<score_header> header() const { return find_element<score_header>(); }
-  std::shared_ptr<score_data> data() const { return find_element<score_data>(); }
 };
 
 } // namespace bmml
