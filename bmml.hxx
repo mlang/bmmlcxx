@@ -49,6 +49,12 @@ public:
       if (auto t = std::dynamic_pointer_cast<T>(e)) return t;
     return {};
   }
+  template<typename T> std::vector<std::shared_ptr<T>> find_elements() const {
+    std::vector<std::shared_ptr<T>> result;
+    for (auto &&e : elements_)
+      if (auto t = std::dynamic_pointer_cast<T>(e)) result.push_back(t);
+    return result;
+  }
 
   // Parse an element. If start_end is false, then don't parse the
   // start and end of the element.
@@ -1007,6 +1013,9 @@ public:
 
 };
 
+class ornament_type;
+
+
 class ornament : public dom::element {
   REGISTER_DECLARATION(ornament);
 
@@ -1017,6 +1026,10 @@ public:
 
   std::string id() const;
   void id(std::string const& value);
+
+
+  std::vector<std::shared_ptr<accidental>> accidentals() const;
+  std::shared_ptr<bmml::ornament_type> ornament_type() const;
 
 };
 

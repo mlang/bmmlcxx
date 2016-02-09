@@ -28,6 +28,9 @@ void bmml::{class_name}::{name}(std::string const& value) {{
 """
 
 forwards = {
+  'ornament': """
+class ornament_type;
+""",
   'score': """
 class score_header;
 class score_data;
@@ -35,6 +38,17 @@ class score_data;
 }
 
 methods = {
+  'ornament': {'declaration': """
+  std::vector<std::shared_ptr<accidental>> accidentals() const;
+  std::shared_ptr<bmml::ornament_type> ornament_type() const;
+""", 'definition': """
+vector<shared_ptr<bmml::accidental>> bmml::ornament::accidentals() const {
+  return find_elements<bmml::accidental>();
+}
+shared_ptr<bmml::ornament_type> bmml::ornament::ornament_type() const {
+  return find_element<bmml::ornament_type>();
+}
+"""},
   'score': {'declaration': """
   std::shared_ptr<score_header> header() const;
   std::shared_ptr<score_data> data() const;
@@ -69,6 +83,8 @@ def cpp():
       type = 'simple'
     if type == 'element':
       type = 'complex'
+    if type == 'any':
+      type = 'mixed'
 
     print(REGISTRATION_TEMPLATE.format(name = e.name, type = type))
     for a in e.iterattributes():

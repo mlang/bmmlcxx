@@ -746,6 +746,14 @@ void bmml::ornament::id(std::string const& value) {
   attributes()[qname("id")] = value;
 }
 
+
+vector<shared_ptr<bmml::accidental>> bmml::ornament::accidentals() const {
+  return find_elements<bmml::accidental>();
+}
+shared_ptr<bmml::ornament_type> bmml::ornament::ornament_type() const {
+  return find_element<bmml::ornament_type>();
+}
+
 REGISTER_DEFINITION(ornament_type, qname("ornament_type"), content::simple);
 
 std::string bmml::ornament_type::id() const {
