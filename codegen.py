@@ -14,13 +14,17 @@ public:
   }}
 """
 
-REQUIRED_STRING_ATTRIBUTE_TEMPLATE = """
-  std::string {name}() const {{
-    return attributes().find(xml::qname("{name}"))->second;
-  }}
-  void {name}(std::string const& value) {{
-    attributes()[xml::qname("{name}")] = value;
-  }}
+REQUIRED_STRING_ATTRIBUTE_DECLARATION = """
+  std::string {name}() const;
+  void {name}(std::string const& value);
+"""
+REQUIRED_STRING_ATTRIBUTE_DEFINITION = """
+std::string bmml::{class_name}::{name}() const {{
+  return attributes().find(qname("{name}"))->second;
+}}
+void bmml::{class_name}::{name}(std::string const& value) {{
+  attributes()[qname("{name}")] = value;
+}}
 """
 
 forwards = {
@@ -51,7 +55,7 @@ def hpp():
     print(CLASS_HEADER_TEMPLATE.format(name = e.name))
     for a in e.iterattributes():
       if (a.type == 'id' or a.type == 'cdata' or a.type == 'idref') and a.default == 'required':
-        print(REQUIRED_STRING_ATTRIBUTE_TEMPLATE.format(name = a.name))
+        print(REQUIRED_STRING_ATTRIBUTE_DECLARATION.format(class_name = e.name, name = a.name))
     if e.name in methods:
       print(methods[e.name]['declaration'])
     print("};")
@@ -67,6 +71,9 @@ def cpp():
       type = 'complex'
 
     print(REGISTRATION_TEMPLATE.format(name = e.name, type = type))
+    for a in e.iterattributes():
+      if (a.type == 'id' or a.type == 'cdata' or a.type == 'idref') and a.default == 'required':
+        print(REQUIRED_STRING_ATTRIBUTE_DEFINITION.format(class_name = e.name, name = a.name))
     if e.name in methods:
       print(methods[e.name]['definition'])
 

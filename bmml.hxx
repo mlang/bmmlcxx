@@ -125,12 +125,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -142,20 +138,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -167,20 +155,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -192,20 +172,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -226,20 +198,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -251,12 +215,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -268,12 +228,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -285,12 +241,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -302,20 +254,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -327,12 +271,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -344,12 +284,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -361,12 +297,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -378,12 +310,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -404,12 +332,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -421,28 +345,16 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string notes() const {
-    return attributes().find(xml::qname("notes"))->second;
-  }
-  void notes(std::string const& value) {
-    attributes()[xml::qname("notes")] = value;
-  }
+  std::string notes() const;
+  void notes(std::string const& value);
 
 
-  std::string root() const {
-    return attributes().find(xml::qname("root"))->second;
-  }
-  void root(std::string const& value) {
-    attributes()[xml::qname("root")] = value;
-  }
+  std::string root() const;
+  void root(std::string const& value);
 
 };
 
@@ -454,20 +366,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string name() const {
-    return attributes().find(xml::qname("name"))->second;
-  }
-  void name(std::string const& value) {
-    attributes()[xml::qname("name")] = value;
-  }
+  std::string name() const;
+  void name(std::string const& value);
 
 };
 
@@ -479,12 +383,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -496,20 +396,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -530,20 +422,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -555,12 +439,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -572,20 +452,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -606,12 +478,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -623,12 +491,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -640,12 +504,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -657,12 +517,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -674,12 +530,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -691,12 +543,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -708,20 +556,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -733,12 +573,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -759,12 +595,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -776,20 +608,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -810,20 +634,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -835,12 +651,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -852,12 +664,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -869,12 +677,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -886,12 +690,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -903,12 +703,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -929,20 +725,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -963,12 +751,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -980,12 +764,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -997,12 +777,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1014,20 +790,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1039,12 +807,8 @@ public:
   }
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1056,12 +820,8 @@ public:
   }
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1082,12 +842,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1099,12 +855,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1116,12 +868,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1133,12 +881,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1159,12 +903,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1176,12 +916,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1193,20 +929,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1218,12 +946,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1244,20 +968,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1269,20 +985,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1294,12 +1002,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1311,12 +1015,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1328,20 +1028,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1353,12 +1045,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1370,12 +1058,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1396,12 +1080,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1413,20 +1093,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1447,12 +1119,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1464,12 +1132,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1481,12 +1145,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1507,12 +1167,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1533,20 +1189,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1558,12 +1206,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1584,12 +1228,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1610,20 +1250,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1639,12 +1271,8 @@ public:
   }
 
 
-  std::string version() const {
-    return attributes().find(xml::qname("version"))->second;
-  }
-  void version(std::string const& value) {
-    attributes()[xml::qname("version")] = value;
-  }
+  std::string version() const;
+  void version(std::string const& value);
 
 
   std::shared_ptr<score_header> header() const;
@@ -1678,12 +1306,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1695,12 +1319,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1712,12 +1332,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1729,20 +1345,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1754,20 +1362,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string start_ref() const {
-    return attributes().find(xml::qname("start_ref"))->second;
-  }
-  void start_ref(std::string const& value) {
-    attributes()[xml::qname("start_ref")] = value;
-  }
+  std::string start_ref() const;
+  void start_ref(std::string const& value);
 
 };
 
@@ -1788,12 +1388,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1805,12 +1401,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1831,20 +1423,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1856,20 +1440,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1881,20 +1457,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1906,20 +1474,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -1931,12 +1491,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1948,12 +1504,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1965,12 +1517,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -1982,20 +1530,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -2007,12 +1547,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2024,12 +1560,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2041,12 +1573,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2058,12 +1586,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2075,20 +1599,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -2100,20 +1616,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string start_ref() const {
-    return attributes().find(xml::qname("start_ref"))->second;
-  }
-  void start_ref(std::string const& value) {
-    attributes()[xml::qname("start_ref")] = value;
-  }
+  std::string start_ref() const;
+  void start_ref(std::string const& value);
 
 };
 
@@ -2134,20 +1642,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string values() const {
-    return attributes().find(xml::qname("values"))->second;
-  }
-  void values(std::string const& value) {
-    attributes()[xml::qname("values")] = value;
-  }
+  std::string values() const;
+  void values(std::string const& value);
 
 };
 
@@ -2159,20 +1659,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -2184,12 +1676,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2201,20 +1689,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string value() const {
-    return attributes().find(xml::qname("value"))->second;
-  }
-  void value(std::string const& value) {
-    attributes()[xml::qname("value")] = value;
-  }
+  std::string value() const;
+  void value(std::string const& value);
 
 };
 
@@ -2226,20 +1706,12 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 
-  std::string notes() const {
-    return attributes().find(xml::qname("notes"))->second;
-  }
-  void notes(std::string const& value) {
-    attributes()[xml::qname("notes")] = value;
-  }
+  std::string notes() const;
+  void notes(std::string const& value);
 
 };
 
@@ -2260,12 +1732,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
@@ -2277,12 +1745,8 @@ public:
   }
 
 
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& value) {
-    attributes()[xml::qname("id")] = value;
-  }
+  std::string id() const;
+  void id(std::string const& value);
 
 };
 
