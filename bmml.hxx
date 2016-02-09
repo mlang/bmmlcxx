@@ -120,7 +120,7 @@ class rest_type : public dom::element {
   REGISTER_DECLARATION(rest_type);
 public:
 
-  rest_type(xml::parser& p, bool se = true) : element(p, se) {
+  rest_type(xml::parser& p, bool start_end = true) : element(p, start_end) {
   }
 
   std::string id() const {
@@ -135,7 +135,7 @@ class part : public dom::element {
   REGISTER_DECLARATION(part);
 public:
 
-  part(xml::parser& p, bool se = true) : element(p, se) {
+  part(xml::parser& p, bool start_end = true) : element(p, start_end) {
   }
 
   std::string id() const {
@@ -151,7 +151,7 @@ class score : public dom::element {
   REGISTER_DECLARATION(score);
 public:
 
-  score(xml::parser& p, bool se) : element(p, se) {
+  score(xml::parser& p, bool start_end = true) : element(p, start_end) {
   }
 
   std::string const& version() const {

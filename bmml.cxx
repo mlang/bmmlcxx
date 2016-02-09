@@ -12,8 +12,7 @@ bmml::dom::factory::map_type *bmml::dom::factory::default_map{};
 namespace {
 
 bool whitespace (const string& s) {
-  for (string::size_type i (0); i < s.size (); ++i) {
-    char c (s[i]);
+  for (char c : s) {
     if (c != 0x20 && c != 0x0A && c != 0x0D && c != 0x09) return false;
   }
 
@@ -22,12 +21,12 @@ bool whitespace (const string& s) {
 
 } // namespace
 
-bmml::dom::element::element(parser& p, bool se) {
-  parse(p, se);
+bmml::dom::element::element(parser& p, bool start_end) {
+  parse(p, start_end);
 }
 
-void bmml::dom::element::parse(parser& p, bool se) {
-  if (se) p.next_expect(parser::start_element);
+void bmml::dom::element::parse(parser& p, bool start_end) {
+  if (start_end) p.next_expect(parser::start_element);
 
   name_ = p.qname();
   for (auto &&a : p.attribute_map()) attributes_[a.first] = a.second.value;
@@ -64,11 +63,11 @@ void bmml::dom::element::parse(parser& p, bool se) {
     }
   }
 
-  if (se) p.next_expect(parser::end_element, name_);
+  if (start_end) p.next_expect(parser::end_element, name_);
 }
 
-void bmml::dom::element::serialize(serializer& s, bool se) const {
-  if (se) s.start_element(name_);
+void bmml::dom::element::serialize(serializer& s, bool start_end) const {
+  if (start_end) s.start_element(name_);
   for (auto &&a : attributes_) s.attribute (a.first, a.second);
 
   // Serialize content (nested elements or text).
@@ -77,7 +76,7 @@ void bmml::dom::element::serialize(serializer& s, bool se) const {
     for (auto &&e : elements_) e->serialize(s);
   } else if (!text_.empty()) s.characters(text_);
 
-  if (se) s.end_element ();
+  if (start_end) s.end_element ();
 }
 
 REGISTER_DEFINITION(rest_type, qname("rest_type"), content::simple);
