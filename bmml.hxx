@@ -44,9 +44,10 @@ public:
   const elements_type& elements () const {return elements_;}
   elements_type& elements () {return elements_;}
 
-  std::shared_ptr<element> find_element_by_name(xml::qname const& name) const {
-    for (auto &&e : elements_) if (e->tag_name() == name) return e;
-    return nullptr;
+  template<typename T> std::shared_ptr<T> find_element() const {
+    for (auto &&e : elements_)
+      if (auto t = std::dynamic_pointer_cast<T>(e)) return t;
+    return {};
   }
 
   // Parse an element. If start_end is false, then don't parse the
@@ -2274,12 +2275,8 @@ public:
     attributes()[xml::qname("version")] = value;
   }
 
-  std::shared_ptr<element> header() const {
-    return find_element_by_name(xml::qname("score_header"));
-  }
-  std::shared_ptr<element> data() const {
-    return find_element_by_name(xml::qname("score_data"));
-  }
+  std::shared_ptr<score_header> header() const { return find_element<score_header>(); }
+  std::shared_ptr<score_data> data() const { return find_element<score_data>(); }
 };
 
 } // namespace bmml
