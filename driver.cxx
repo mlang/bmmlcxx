@@ -29,7 +29,7 @@ int main (int argc, char *argv[]) {
 
     for (auto x : root->data()->elements()) {
       if (auto p = dynamic_pointer_cast<bmml::part>(x)) {
-        cout << p->name() << endl;
+        cout << p->tag_name() << endl;
       }
     }
 

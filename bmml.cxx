@@ -28,7 +28,7 @@ bmml::dom::element::element(parser& p, bool start_end) {
 void bmml::dom::element::parse(parser& p, bool start_end) {
   if (start_end) p.next_expect(parser::start_element);
 
-  name_ = p.qname();
+  tag_name_ = p.qname();
   for (auto &&a : p.attribute_map()) attributes_[a.first] = a.second.value;
 
   // Parse content (nested elements or text).
@@ -43,7 +43,7 @@ void bmml::dom::element::parse(parser& p, bool start_end) {
       }
 
       elements_.push_back(dom::factory::make(p));
-      p.next_expect(parser::end_element, elements_.back()->name());
+      p.next_expect(parser::end_element, elements_.back()->tag_name());
 
       break;
     }
@@ -63,11 +63,11 @@ void bmml::dom::element::parse(parser& p, bool start_end) {
     }
   }
 
-  if (start_end) p.next_expect(parser::end_element, name_);
+  if (start_end) p.next_expect(parser::end_element, tag_name_);
 }
 
 void bmml::dom::element::serialize(serializer& s, bool start_end) const {
-  if (start_end) s.start_element(name_);
+  if (start_end) s.start_element(tag_name_);
   for (auto &&a : attributes_) s.attribute (a.first, a.second);
 
   // Serialize content (nested elements or text).

@@ -27,12 +27,12 @@ public:
     return std::make_shared<T>(p, false);
   }
   
-  element(const xml::qname& name) : name_(name) {}
+  element(const xml::qname& name) : tag_name_(name) {}
   element(const xml::qname& name, std::string const& text)
-  : name_(name), text_(text) {}
+  : tag_name_(name), text_(text) {}
   virtual ~element() = default;
 
-  const xml::qname& name() const { return name_; }
+  const xml::qname& tag_name() const { return tag_name_; }
   const attributes_type& attributes () const {return attributes_;}
 
   attributes_type& attributes () { return attributes_; }
@@ -45,7 +45,7 @@ public:
   elements_type& elements () {return elements_;}
 
   std::shared_ptr<element> find_element_by_name(xml::qname const& name) const {
-    for (auto &&e : elements_) if (e->name() == name) return e;
+    for (auto &&e : elements_) if (e->tag_name() == name) return e;
     return nullptr;
   }
 
@@ -61,8 +61,9 @@ public:
 
 protected:
   void parse(xml::parser&, bool start_end = true);
+
 private:
-  xml::qname name_;
+  xml::qname tag_name_;
   attributes_type attributes_;
   std::string text_;           // Simple content only.
   elements_type elements_;     // Complex content only.
@@ -71,8 +72,8 @@ private:
 struct factory {
   using map_type =
     std::map<xml::qname,
-	     std::tuple<std::shared_ptr<element>(*)(xml::parser&),
-			xml::content>>;
+             std::tuple<std::shared_ptr<element>(*)(xml::parser&),
+                        xml::content>>;
 
   static std::shared_ptr<element> make(xml::parser& p) {
     auto name = p.qname();
@@ -80,7 +81,6 @@ struct factory {
     if (iter == get_map()->end()) {
       return std::make_shared<element>(p, false);
     }
-
     p.content(std::get<1>(iter->second));
     return std::get<0>(iter->second)(p);
   }
@@ -124,7 +124,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -142,12 +141,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -160,12 +166,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -178,12 +191,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -195,7 +215,6 @@ public:
   alteration(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class alternation : public dom::element {
@@ -206,12 +225,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -224,6 +250,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class appoggiatura_ref : public dom::element {
@@ -234,6 +267,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class barline : public dom::element {
@@ -242,7 +282,6 @@ class barline : public dom::element {
 public:
   barline(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -262,12 +301,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -278,7 +324,6 @@ class barre : public dom::element {
 public:
   barre(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -298,7 +343,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -314,7 +358,6 @@ class breath : public dom::element {
 public:
   breath(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -334,7 +377,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -351,7 +393,6 @@ public:
   chord_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class chord_prefix : public dom::element {
@@ -360,7 +401,6 @@ class chord_prefix : public dom::element {
 public:
   chord_prefix(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -380,12 +420,27 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string notes() const {
+    return attributes().find(xml::qname("notes"))->second;
+  }
+  void notes(std::string const& value) {
+    attributes()[xml::qname("notes")] = value;
+  }
+
+
+  std::string root() const {
+    return attributes().find(xml::qname("root"))->second;
+  }
+  void root(std::string const& value) {
+    attributes()[xml::qname("root")] = value;
   }
 
 };
@@ -398,12 +453,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string name() const {
+    return attributes().find(xml::qname("name"))->second;
+  }
+  void name(std::string const& value) {
+    attributes()[xml::qname("name")] = value;
   }
 
 };
@@ -414,7 +476,6 @@ class coda : public dom::element {
 public:
   coda(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -434,12 +495,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -451,7 +519,6 @@ public:
   duration(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class dynamic : public dom::element {
@@ -462,12 +529,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -478,7 +552,6 @@ class editorial_mark : public dom::element {
 public:
   editorial_mark(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -498,12 +571,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -515,7 +595,6 @@ public:
   family(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class fermata : public dom::element {
@@ -524,7 +603,6 @@ class fermata : public dom::element {
 public:
   fermata(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -544,7 +622,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -560,7 +637,6 @@ class foot_crossing : public dom::element {
 public:
   foot_crossing(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -580,7 +656,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -596,7 +671,6 @@ class hand : public dom::element {
 public:
   hand(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -616,7 +690,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -634,12 +707,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -650,7 +730,6 @@ class interval : public dom::element {
 public:
   interval(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -669,7 +748,6 @@ public:
   interval_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class interval_ref : public dom::element {
@@ -679,6 +757,13 @@ public:
   interval_ref(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
+
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
 
 };
 
@@ -690,12 +775,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -707,7 +799,6 @@ public:
   intervals(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class key_signature : public dom::element {
@@ -718,12 +809,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -734,7 +832,6 @@ class line_of_continuation : public dom::element {
 public:
   line_of_continuation(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -754,7 +851,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -770,7 +866,6 @@ class lyric_prefix : public dom::element {
 public:
   lyric_prefix(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -790,7 +885,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -806,7 +900,6 @@ class lyric_repetition : public dom::element {
 public:
   lyric_repetition(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -825,7 +918,6 @@ public:
   lyrics(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class merged_text : public dom::element {
@@ -836,12 +928,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -853,7 +952,6 @@ public:
   meta_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class metronome : public dom::element {
@@ -862,7 +960,6 @@ class metronome : public dom::element {
 public:
   metronome(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -882,7 +979,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -898,7 +994,6 @@ class metronome_note_type : public dom::element {
 public:
   metronome_note_type(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -918,12 +1013,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -936,6 +1038,13 @@ public:
   }
 
 
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
+  }
+
 };
 
 class midi_metronome : public dom::element {
@@ -946,6 +1055,13 @@ public:
   }
 
 
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
+  }
+
 };
 
 class multimeasure : public dom::element {
@@ -955,7 +1071,6 @@ public:
   multimeasure(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class music_hyphen : public dom::element {
@@ -964,7 +1079,6 @@ class music_hyphen : public dom::element {
 public:
   music_hyphen(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -984,7 +1098,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1000,7 +1113,6 @@ class newline : public dom::element {
 public:
   newline(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1020,7 +1132,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1037,7 +1148,6 @@ public:
   note_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class note_ref : public dom::element {
@@ -1048,6 +1158,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class note_type : public dom::element {
@@ -1056,7 +1173,6 @@ class note_type : public dom::element {
 public:
   note_type(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1076,12 +1192,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1094,6 +1217,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class nuances : public dom::element {
@@ -1102,7 +1232,6 @@ class nuances : public dom::element {
 public:
   nuances(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 };
 
@@ -1114,12 +1243,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1132,12 +1268,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1148,7 +1291,6 @@ class organ_pedal : public dom::element {
 public:
   organ_pedal(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1168,7 +1310,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1186,12 +1327,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1202,7 +1350,6 @@ class part : public dom::element {
 public:
   part(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1222,7 +1369,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1239,7 +1385,6 @@ public:
   part_list(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class part_name : public dom::element {
@@ -1248,7 +1393,6 @@ class part_name : public dom::element {
 public:
   part_name(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1268,12 +1412,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1285,7 +1436,6 @@ public:
   pitch(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class pizzicato : public dom::element {
@@ -1294,7 +1444,6 @@ class pizzicato : public dom::element {
 public:
   pizzicato(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1314,7 +1463,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1330,7 +1478,6 @@ class repeat : public dom::element {
 public:
   repeat(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1349,7 +1496,6 @@ public:
   repeat_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class repeat_ref : public dom::element {
@@ -1358,27 +1504,6 @@ class repeat_ref : public dom::element {
 public:
   repeat_ref(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
-
-};
-
-class repeats : public dom::element {
-  REGISTER_DECLARATION(repeats);
-
-public:
-  repeats(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
-  }
-
-
-};
-
-class repetition : public dom::element {
-  REGISTER_DECLARATION(repetition);
-
-public:
-  repetition(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
-  }
-
 
 
   std::string id() const {
@@ -1390,13 +1515,46 @@ public:
 
 };
 
+class repeats : public dom::element {
+  REGISTER_DECLARATION(repeats);
+
+public:
+  repeats(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+};
+
+class repetition : public dom::element {
+  REGISTER_DECLARATION(repetition);
+
+public:
+  repetition(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
+  }
+
+};
+
 class rest : public dom::element {
   REGISTER_DECLARATION(rest);
 
 public:
   rest(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1415,26 +1573,14 @@ public:
   rest_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
-class rhythmic_group : public dom::element {
-  REGISTER_DECLARATION(rhythmic_group);
+class rest_type : public dom::element {
+  REGISTER_DECLARATION(rest_type);
 
 public:
-  rhythmic_group(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  rest_type(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
-
-};
-
-class right_string_fingering : public dom::element {
-  REGISTER_DECLARATION(right_string_fingering);
-
-public:
-  right_string_fingering(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
-  }
-
 
 
   std::string id() const {
@@ -1446,13 +1592,46 @@ public:
 
 };
 
+class rhythmic_group : public dom::element {
+  REGISTER_DECLARATION(rhythmic_group);
+
+public:
+  rhythmic_group(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+};
+
+class right_string_fingering : public dom::element {
+  REGISTER_DECLARATION(right_string_fingering);
+
+public:
+  right_string_fingering(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
+  }
+
+};
+
 class score_data : public dom::element {
   REGISTER_DECLARATION(score_data);
 
 public:
   score_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 };
 
@@ -1463,7 +1642,6 @@ public:
   score_header(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class segno : public dom::element {
@@ -1472,7 +1650,6 @@ class segno : public dom::element {
 public:
   segno(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1492,7 +1669,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1508,7 +1684,6 @@ class shift_line : public dom::element {
 public:
   shift_line(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1528,12 +1703,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1546,6 +1728,21 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string start_ref() const {
+    return attributes().find(xml::qname("start_ref"))->second;
+  }
+  void start_ref(std::string const& value) {
+    attributes()[xml::qname("start_ref")] = value;
+  }
+
 };
 
 class slurs : public dom::element {
@@ -1555,7 +1752,6 @@ public:
   slurs(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class space : public dom::element {
@@ -1564,7 +1760,6 @@ class space : public dom::element {
 public:
   space(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1584,7 +1779,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1601,7 +1795,6 @@ public:
   stem_data(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class stem_type : public dom::element {
@@ -1612,12 +1805,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1630,12 +1830,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1648,12 +1855,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1666,12 +1880,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1682,7 +1903,6 @@ class stroke : public dom::element {
 public:
   stroke(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1702,7 +1922,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1718,7 +1937,6 @@ class syllabic_parenthesis : public dom::element {
 public:
   syllabic_parenthesis(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1738,12 +1956,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1754,7 +1979,6 @@ class syllabic_text : public dom::element {
 public:
   syllabic_text(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1774,7 +1998,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1790,7 +2013,6 @@ class syllable_mute : public dom::element {
 public:
   syllable_mute(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1810,6 +2032,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class tie : public dom::element {
@@ -1820,12 +2049,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1838,6 +2074,21 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string start_ref() const {
+    return attributes().find(xml::qname("start_ref"))->second;
+  }
+  void start_ref(std::string const& value) {
+    attributes()[xml::qname("start_ref")] = value;
+  }
+
 };
 
 class ties : public dom::element {
@@ -1846,7 +2097,6 @@ class ties : public dom::element {
 public:
   ties(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 };
 
@@ -1858,12 +2108,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string values() const {
+    return attributes().find(xml::qname("values"))->second;
+  }
+  void values(std::string const& value) {
+    attributes()[xml::qname("values")] = value;
   }
 
 };
@@ -1876,12 +2133,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1894,6 +2158,13 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
 };
 
 class tuplet : public dom::element {
@@ -1904,12 +2175,19 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
   void id(std::string const& value) {
     attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string value() const {
+    return attributes().find(xml::qname("value"))->second;
+  }
+  void value(std::string const& value) {
+    attributes()[xml::qname("value")] = value;
   }
 
 };
@@ -1922,6 +2200,21 @@ public:
   }
 
 
+  std::string id() const {
+    return attributes().find(xml::qname("id"))->second;
+  }
+  void id(std::string const& value) {
+    attributes()[xml::qname("id")] = value;
+  }
+
+
+  std::string notes() const {
+    return attributes().find(xml::qname("notes"))->second;
+  }
+  void notes(std::string const& value) {
+    attributes()[xml::qname("notes")] = value;
+  }
+
 };
 
 class tuplets : public dom::element {
@@ -1931,7 +2224,6 @@ public:
   tuplets(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
 
-
 };
 
 class unknown : public dom::element {
@@ -1940,7 +2232,6 @@ class unknown : public dom::element {
 public:
   unknown(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
-
 
 
   std::string id() const {
@@ -1960,7 +2251,6 @@ public:
   }
 
 
-
   std::string id() const {
     return attributes().find(xml::qname("id"))->second;
   }
@@ -1968,21 +2258,6 @@ public:
     attributes()[xml::qname("id")] = value;
   }
 
-};
-
-class rest_type : public dom::element {
-  REGISTER_DECLARATION(rest_type);
-
-public:
-  rest_type(xml::parser& p, bool start_end = true) : element(p, start_end) {
-  }
-
-  std::string id() const {
-    return attributes().find(xml::qname("id"))->second;
-  }
-  void id(std::string const& new_id) {
-    attributes()[xml::qname("id")] = new_id;
-  }
 };
 
 class score : public dom::element {
