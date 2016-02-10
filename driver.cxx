@@ -29,7 +29,14 @@ int main (int argc, char *argv[]) {
 
     for (auto x : root->data()->elements()) {
       if (auto p = dynamic_pointer_cast<bmml::part>(x)) {
-        cout << p->tag_name() << endl;
+        for (auto pe : p->elements()) {
+          if (auto n = dynamic_pointer_cast<bmml::note>(pe)) {
+            for (auto ne : n->elements()) {
+              cout << ne->text();
+            }
+            cout << endl;
+          }
+        }
       }
     }
 
