@@ -134,6 +134,17 @@ public:
 //
 //---------------------------------------------------------------------------//
 
+enum class start_stop_continue {
+  start,
+  stop,
+  continue_
+};
+
+enum class up_down {
+  up,
+  down
+};
+
 enum class diatonic_step {
   A,
   B,
@@ -144,6 +155,16 @@ enum class diatonic_step {
   G
 };
 
+enum class start_stop {
+  start,
+  stop
+};
+
+enum class left_right {
+  left,
+  right
+};
+
 enum class ambiguous_value {
   eighth_or_128th,
   quarter_or_64th,
@@ -151,21 +172,6 @@ enum class ambiguous_value {
   whole_or_16th,
   brevis,
   longa
-};
-
-enum class hand_type {
-  left,
-  right
-};
-
-enum class start_stop {
-  start,
-  stop
-};
-
-enum class up_down {
-  up,
-  down
 };
 
 class abbr_name : public dom::element {
@@ -314,6 +320,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   up_down value() const;
   void value(up_down);
 };
@@ -385,6 +396,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_cross_staff() const;
+  bool cross_staff() const;
+  void cross_staff(bool);
+  void clear_cross_staff();
 
   std::string name() const;
   void name(std::string const&);
@@ -524,8 +540,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  hand_type value() const;
-  void value(hand_type);
+  left_right value() const;
+  void value(left_right);
 };
 
 class harmonic : public dom::element {
@@ -537,6 +553,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
 };
 
 class inaccord : public dom::element {
@@ -592,6 +613,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
 
   std::string value() const;
   void value(std::string const&);
@@ -675,6 +701,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
 };
 
 class lyrics : public dom::element {
@@ -738,6 +769,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_dot() const;
+  bool dot() const;
+  void dot(bool);
+  void clear_dot();
 
   ambiguous_value value() const;
   void value(ambiguous_value);
@@ -877,6 +913,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -967,6 +1008,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -1044,8 +1090,13 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  hand_type value() const;
-  void value(hand_type);
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
+  left_right value() const;
+  void value(left_right);
 };
 
 class rasgueado : public dom::element {
@@ -1263,6 +1314,9 @@ public:
 
   std::string start_ref() const;
   void start_ref(std::string const&);
+
+  start_stop_continue type() const;
+  void type(start_stop_continue);
 };
 
 class slurs : public dom::element {
@@ -1327,6 +1381,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -1369,6 +1428,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   up_down value() const;
   void value(up_down);
 };
@@ -1382,6 +1446,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
 };
 
 class syllabic_parenthesis : public dom::element {
@@ -1502,6 +1571,16 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_single_number() const;
+  bool single_number() const;
+  void single_number(bool);
+  void clear_single_number();
+
+  bool has_figure() const;
+  bool figure() const;
+  void figure(bool);
+  void clear_figure();
+
   std::string values() const;
   void values(std::string const&);
 };
@@ -1515,6 +1594,11 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
 
   std::string value() const;
   void value(std::string const&);
@@ -1541,6 +1625,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  bool has_doubled() const;
+  bool doubled() const;
+  void doubled(bool);
+  void clear_doubled();
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -1554,6 +1643,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  start_stop_continue type() const;
+  void type(start_stop_continue);
 
   std::string notes() const;
   void notes(std::string const&);

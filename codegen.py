@@ -1,7 +1,7 @@
 # $ python3 -c "from codegen import *; hpp()"
 # $ python3 -c "from codegen import *; cpp()"
 
-from lxml.etree import DTD, parse
+from lxml.etree import DTD
 
 bmml = DTD('bmml.dtd')
 
@@ -18,14 +18,54 @@ REQUIRED_STRING_ATTRIBUTE_DECLARATION = """
   std::string {name}() const;
   void {name}(std::string const&);
 """
+
 REQUIRED_STRING_ATTRIBUTE_DEFINITION = """
 std::string bmml::{class_name}::{name}() const {{
-  return attributes().find(qname("{name}"))->second;
+  auto iter = attributes().find(qname("{name}"));
+  if (iter != attributes().end()) return iter->second;
+  throw missing_attribute();
 }}
 
 void bmml::{class_name}::{name}(std::string const& value) {{
   attributes()[qname("{name}")] = value;
 }}
+"""
+
+IMPLIED_BOOL_ATTRIBUTE_DECLARATION = """
+  bool has_{name}() const;
+  bool {name}() const;
+  void {name}(bool);
+  void clear_{name}();
+"""
+
+IMPLIED_BOOL_ATTRIBUTE_DEFINITION = """
+bool bmml::{class_name}::has_{name}() const {{
+  return attributes().find(qname("{name}")) != attributes().end();
+}}
+
+bool bmml::{class_name}::{name}() const {{
+  auto iter = attributes().find(qname("{name}"));
+  if (iter != attributes().end()) {{
+         if (iter->second == "true") return true;
+    else if (iter->second == "false") return false;
+    throw illegal_enumeration{{}};
+  }}
+  throw missing_attribute{{}};
+}}
+
+void bmml::{class_name}::{name}(bool value) {{
+  attributes()[qname("{name}")] = value ? "true" : "false";
+}}
+
+void bmml::{class_name}::clear_{name}() {{
+  auto iter = attributes().find(qname("{name}"));
+  if (iter != attributes().end()) attributes().erase(iter);
+}}
+"""
+
+REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION = """
+  {enum_name} {method_name}() const;
+  void {method_name}({enum_name});
 """
 
 forwards = {
@@ -71,12 +111,15 @@ enumerations = {
  'brevis', 'longa'): {'name': 'ambiguous_value'},
 ('A', 'B', 'C', 'D', 'E', 'F', 'G'): {'name': 'diatonic_step'},
 ('start', 'stop'): {'name': 'start_stop'},
-('left', 'right'): {'name': 'hand_type'}
+('start', 'stop', 'continue'): {'name': 'start_stop_continue'},
+('left', 'right'): {'name': 'left_right'}
 }
 
 def mangle(name):
   if name == '8th_or_128th':
     name = 'eighth_or_128th'
+  elif name == 'continue':
+    name = 'continue_'
   return name
 
 def enum_defs():
@@ -91,10 +134,9 @@ enum class {name} {{
 def required_enumeration_declaration(method_name, values):
   if values in enumerations:
     enum_name = enumerations[values]['name']
-    print("""
-  {enum_name} {method_name}() const;
-  void {method_name}({enum_name});
-""".format(enum_name=enum_name, method_name=method_name), end='')
+    print(REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION.format(
+            enum_name=enum_name, method_name=method_name),
+          end='')
 
 def required_enumeration_definition(class_name, method_name, values):
   if values in enumerations:
@@ -151,6 +193,8 @@ def hpp():
         print(REQUIRED_STRING_ATTRIBUTE_DECLARATION.format(class_name = e.name, name = a.name), end='')
       elif a.type == 'enumeration' and a.default == 'required':
         required_enumeration_declaration(a.name, tuple(a.values()))
+      elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
+        print(IMPLIED_BOOL_ATTRIBUTE_DECLARATION.format(class_name = e.name, name = a.name), end='')
     if e.name in methods:
       print(methods[e.name]['declaration'])
     print("};")
@@ -173,6 +217,8 @@ def cpp():
         print(REQUIRED_STRING_ATTRIBUTE_DEFINITION.format(class_name = e.name, name = a.name))
       elif a.type == 'enumeration' and a.default == 'required':
         required_enumeration_definition(e.name, a.name, tuple(a.values()))
+      elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
+        print(IMPLIED_BOOL_ATTRIBUTE_DEFINITION.format(class_name = e.name, name = a.name), end='')
     if e.name in methods:
       print(methods[e.name]['definition'])
 
