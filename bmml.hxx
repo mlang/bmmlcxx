@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/optional.hpp>
+
 namespace bmml {
 namespace dom {
 
@@ -130,19 +132,13 @@ public:
   missing_attribute() : std::runtime_error("Missing attribute") {}
 };
 
-// Start of schema specific element classes
-//
-//---------------------------------------------------------------------------//
+using boost::optional;
 
-enum class start_stop_continue {
-  start,
-  stop,
-  continue_
-};
+// ------------------------------------------------------------------------- //
 
-enum class up_down {
-  up,
-  down
+enum class left_right {
+  left,
+  right
 };
 
 enum class diatonic_step {
@@ -155,16 +151,6 @@ enum class diatonic_step {
   G
 };
 
-enum class start_stop {
-  start,
-  stop
-};
-
-enum class left_right {
-  left,
-  right
-};
-
 enum class ambiguous_value {
   eighth_or_128th,
   quarter_or_64th,
@@ -172,6 +158,22 @@ enum class ambiguous_value {
   whole_or_16th,
   brevis,
   longa
+};
+
+enum class start_stop {
+  start,
+  stop
+};
+
+enum class start_stop_continue {
+  start,
+  stop,
+  continue_
+};
+
+enum class up_down {
+  up,
+  down
 };
 
 class abbr_name : public dom::element {
@@ -183,6 +185,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> value() const;
+  void value(optional<std::string>);
 };
 
 class accidental : public dom::element {
@@ -194,6 +199,15 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> editorial() const;
+  void editorial(optional<std::string>);
+
+  optional<std::string> step() const;
+  void step(optional<std::string>);
+
+  optional<std::string> cancel() const;
+  void cancel(optional<std::string>);
 
   std::string value() const;
   void value(std::string const&);
@@ -320,10 +334,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   up_down value() const;
   void value(up_down);
@@ -380,6 +392,18 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  optional<std::string> value() const;
+  void value(optional<std::string>);
+
+  optional<std::string> dot() const;
+  void dot(optional<std::string>);
+
+  optional<std::string> duration() const;
+  void duration(optional<std::string>);
+
+  optional<std::string> bass() const;
+  void bass(optional<std::string>);
+
   std::string notes() const;
   void notes(std::string const&);
 
@@ -397,10 +421,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_cross_staff() const;
-  bool cross_staff() const;
-  void cross_staff(bool);
-  void clear_cross_staff();
+  optional<bool> cross_staff() const;
+  void cross_staff(optional<bool>);
+
+  optional<std::string> line() const;
+  void line(optional<std::string>);
 
   std::string name() const;
   void name(std::string const&);
@@ -437,6 +462,8 @@ class duration : public dom::element {
 public:
   duration(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
+
+  operator int() const;
 };
 
 class dynamic : public dom::element {
@@ -495,6 +522,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> shape() const;
+  void shape(optional<std::string>);
 };
 
 class fingering : public dom::element {
@@ -506,6 +536,12 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> alternative() const;
+  void alternative(optional<std::string>);
+
+  optional<std::string> value() const;
+  void value(optional<std::string>);
 };
 
 class foot_crossing : public dom::element {
@@ -528,6 +564,15 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> lang() const;
+  void lang(optional<std::string>);
+
+  optional<std::string> value() const;
+  void value(optional<std::string>);
+
+  optional<std::string> type() const;
+  void type(optional<std::string>);
 };
 
 class hand : public dom::element {
@@ -554,10 +599,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 };
 
 class inaccord : public dom::element {
@@ -614,10 +657,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);
@@ -640,6 +681,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> cancel() const;
+  void cancel(optional<std::string>);
 
   std::string value() const;
   void value(std::string const&);
@@ -668,6 +712,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> lang() const;
+  void lang(optional<std::string>);
 };
 
 class lyric_prefix : public dom::element {
@@ -702,10 +749,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 };
 
 class lyrics : public dom::element {
@@ -770,10 +815,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_dot() const;
-  bool dot() const;
-  void dot(bool);
-  void clear_dot();
+  optional<bool> dot() const;
+  void dot(optional<bool>);
 
   ambiguous_value value() const;
   void value(ambiguous_value);
@@ -843,6 +886,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> value() const;
+  void value(optional<std::string>);
 };
 
 class newline : public dom::element {
@@ -913,10 +959,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);
@@ -965,6 +1009,9 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  optional<std::string> position() const;
+  void position(optional<std::string>);
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -995,7 +1042,6 @@ public:
 
   std::vector<std::shared_ptr<accidental>> accidentals() const;
   std::shared_ptr<bmml::ornament_type> ornament_type() const;
-
 };
 
 class ornament_type : public dom::element {
@@ -1008,10 +1054,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);
@@ -1037,6 +1081,12 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> transpose() const;
+  void transpose(optional<std::string>);
+
+  optional<std::string> lang() const;
+  void lang(optional<std::string>);
 };
 
 class part_list : public dom::element {
@@ -1078,6 +1128,8 @@ class pitch : public dom::element {
 public:
   pitch(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
+
+  operator int() const;
 };
 
 class pizzicato : public dom::element {
@@ -1090,10 +1142,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   left_right value() const;
   void value(left_right);
@@ -1161,6 +1211,9 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  optional<std::string> separation() const;
+  void separation(optional<std::string>);
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -1193,6 +1246,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> multimeasure() const;
+  void multimeasure(optional<std::string>);
 
   ambiguous_value value() const;
   void value(ambiguous_value);
@@ -1236,7 +1292,6 @@ public:
 
   std::shared_ptr<score_header> header() const;
   std::shared_ptr<score_data> data() const;
-
 };
 
 class score_data : public dom::element {
@@ -1381,10 +1436,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);
@@ -1428,10 +1481,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   up_down value() const;
   void value(up_down);
@@ -1447,10 +1498,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 };
 
 class syllabic_parenthesis : public dom::element {
@@ -1474,6 +1523,9 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  optional<std::string> verses() const;
+  void verses(optional<std::string>);
+
   std::string value() const;
   void value(std::string const&);
 };
@@ -1487,6 +1539,12 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<std::string> lang() const;
+  void lang(optional<std::string>);
+
+  optional<std::string> value() const;
+  void value(optional<std::string>);
 };
 
 class syllable : public dom::element {
@@ -1571,15 +1629,11 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_single_number() const;
-  bool single_number() const;
-  void single_number(bool);
-  void clear_single_number();
+  optional<bool> single_number() const;
+  void single_number(optional<bool>);
 
-  bool has_figure() const;
-  bool figure() const;
-  void figure(bool);
-  void clear_figure();
+  optional<bool> figure() const;
+  void figure(optional<bool>);
 
   std::string values() const;
   void values(std::string const&);
@@ -1595,10 +1649,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);
@@ -1625,10 +1677,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  bool has_doubled() const;
-  bool doubled() const;
-  void doubled(bool);
-  void clear_doubled();
+  optional<bool> doubled() const;
+  void doubled(optional<bool>);
 
   std::string value() const;
   void value(std::string const&);

@@ -1,72 +1,120 @@
 # $ python3 -c "from codegen import *; hpp()"
 # $ python3 -c "from codegen import *; cpp()"
 
+from jinja2 import DictLoader, Environment
 from lxml.etree import DTD
 
 bmml = DTD('bmml.dtd')
 
-CLASS_HEADER_TEMPLATE = """
-class {name} : public dom::element {{
-  REGISTER_DECLARATION({name});
+CLASS_HEADER = """
+class {{class}} : public dom::element {
+  REGISTER_DECLARATION({{class}});
 
 public:
-  {name}(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {{
-  }}
+  {{class}}(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
 """
 
 REQUIRED_STRING_ATTRIBUTE_DECLARATION = """
-  std::string {name}() const;
-  void {name}(std::string const&);
+  std::string {{method}}() const;
+  void {{method}}(std::string const&);
 """
 
 REQUIRED_STRING_ATTRIBUTE_DEFINITION = """
-std::string bmml::{class_name}::{name}() const {{
-  auto iter = attributes().find(qname("{name}"));
+std::string bmml::{{class}}::{{method}}() const {
+  auto iter = attributes().find(qname{"{{attribute}}"});
   if (iter != attributes().end()) return iter->second;
-  throw missing_attribute();
-}}
 
-void bmml::{class_name}::{name}(std::string const& value) {{
-  attributes()[qname("{name}")] = value;
-}}
+  throw missing_attribute{};
+}
+
+void bmml::{{class}}::{{method}}(std::string const& value) {
+  attributes()[qname{"{{attribute}}"}] = value;
+}
 """
 
 IMPLIED_BOOL_ATTRIBUTE_DECLARATION = """
-  bool has_{name}() const;
-  bool {name}() const;
-  void {name}(bool);
-  void clear_{name}();
+  optional<bool> {{method}}() const;
+  void {{method}}(optional<bool>);
 """
 
 IMPLIED_BOOL_ATTRIBUTE_DEFINITION = """
-bool bmml::{class_name}::has_{name}() const {{
-  return attributes().find(qname("{name}")) != attributes().end();
-}}
+optional<bool> bmml::{{class}}::{{method}}() const {
+  static const qname attr{"{{attribute}}"};
 
-bool bmml::{class_name}::{name}() const {{
-  auto iter = attributes().find(qname("{name}"));
-  if (iter != attributes().end()) {{
-         if (iter->second == "true") return true;
-    else if (iter->second == "false") return false;
-    throw illegal_enumeration{{}};
-  }}
-  throw missing_attribute{{}};
-}}
+  auto iter = attributes().find(attr);
+  if (iter != attributes().end()) {
+         if (iter->second == "true") return {true};
+    else if (iter->second == "false") return {false};
 
-void bmml::{class_name}::{name}(bool value) {{
-  attributes()[qname("{name}")] = value ? "true" : "false";
-}}
+    throw illegal_enumeration{};
+  }
 
-void bmml::{class_name}::clear_{name}() {{
-  auto iter = attributes().find(qname("{name}"));
-  if (iter != attributes().end()) attributes().erase(iter);
-}}
+  return {};
+}
+
+void bmml::{{class}}::{{method}}(optional<bool> opt_value) {
+  static const qname attr{"{{attribute}}"};
+
+  if (opt_value) {
+    attributes()[attr] = *opt_value ? "true" : "false";
+  } else {
+    attributes().erase(attr);
+  }
+}
 """
 
 REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION = """
-  {enum_name} {method_name}() const;
-  void {method_name}({enum_name});
+  {{type}} {{method}}() const;
+  void {{method}}({{type}});
 """
+
+IMPLIED_STRING_ATTRIBUTE_DECLARATION = """
+  optional<std::string> {{method}}() const;
+  void {{method}}(optional<std::string>);
+"""
+
+IMPLIED_STRING_ATTRIBUTE_DEFINITION = """
+optional<std::string> bmml::{{class}}::{{method}}() const {
+  static const qname attr{"{{attribute}}"};
+
+  auto iter = attributes().find(attr);
+  if (iter != attributes().end()) return {iter->second};
+
+  return {};
+}
+
+void bmml::{{class}}::{{method}}(optional<std::string> opt_value) {
+  static const qname attr{"{{attribute}}"};
+
+  if (opt_value) {
+    attributes()[attr] = *opt_value;
+  } else {
+    attributes().erase(attr);
+  }
+}
+"""
+
+PCDATA_OPERATOR_DECLARATION = """
+  operator {{type}}() const;
+
+"""
+
+PCDATA_OPERATOR_DEFINITION = """
+bmml::{{class}}::operator {{type}}() const {
+  return boost::lexical_cast<{{type}}>(text());
+}
+
+"""
+
+REGISTER_DEFINITION = """
+REGISTER_DEFINITION({{class}}, qname("{{tag_name}}"), content::{{content_type}});
+"""
+
+templates = Environment(loader=DictLoader(globals()))
+
+def template(name):
+  return templates.get_template(name)
 
 forwards = {
   'ornament': """
@@ -79,10 +127,17 @@ class score_data;
 }
 
 methods = {
-  'ornament': {'declaration': """
+  'duration': {
+    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'type': 'int'}),
+    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': 'duration',
+                                                                 'type': 'int'})
+  },
+  'ornament': {
+    'declaration': """
   std::vector<std::shared_ptr<accidental>> accidentals() const;
   std::shared_ptr<bmml::ornament_type> ornament_type() const;
-""", 'definition': """
+""",
+    'definition': """
 vector<shared_ptr<bmml::accidental>> bmml::ornament::accidentals() const {
   return find_elements<bmml::accidental>();
 }
@@ -90,11 +145,19 @@ vector<shared_ptr<bmml::accidental>> bmml::ornament::accidentals() const {
 shared_ptr<bmml::ornament_type> bmml::ornament::ornament_type() const {
   return find_element<bmml::ornament_type>();
 }
-"""},
-  'score': {'declaration': """
+"""
+  },
+  'pitch': {
+    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'type': 'int'}),
+    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': 'pitch',
+                                                                 'type': 'int'})
+  },
+  'score': {
+    'declaration': """
   std::shared_ptr<score_header> header() const;
   std::shared_ptr<score_data> data() const;
-""", 'definition': """
+""",
+    'definition': """
 shared_ptr<bmml::score_header> bmml::score::header() const {
   return find_element<bmml::score_header>();
 }
@@ -134,9 +197,8 @@ enum class {name} {{
 def required_enumeration_declaration(method_name, values):
   if values in enumerations:
     enum_name = enumerations[values]['name']
-    print(REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION.format(
-            enum_name=enum_name, method_name=method_name),
-          end='')
+    print(template('REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION').render(
+            {'type': enum_name, 'method': method_name}))
 
 def required_enumeration_definition(class_name, method_name, values):
   if values in enumerations:
@@ -160,6 +222,7 @@ bmml::{enum_name} bmml::{class_name}::{method_name}() const {{
     print("""
     throw illegal_enumeration();
   }
+
   throw missing_attribute();
 }
 """, end='')
@@ -187,19 +250,19 @@ def hpp():
   for e in bmml.iterelements():
     if e.name in forwards:
       print(forwards[e.name])
-    print(CLASS_HEADER_TEMPLATE.format(name = e.name), end='')
+    print(template('CLASS_HEADER').render({'class': e.name}))
     for a in e.iterattributes():
       if (a.type == 'id' or a.type == 'cdata' or a.type == 'idref') and a.default == 'required':
-        print(REQUIRED_STRING_ATTRIBUTE_DECLARATION.format(class_name = e.name, name = a.name), end='')
+        print(template('REQUIRED_STRING_ATTRIBUTE_DECLARATION').render({'method': a.name}))
+      elif a.type == 'cdata' and a.default == 'implied':
+        print(template('IMPLIED_STRING_ATTRIBUTE_DECLARATION').render({'method': a.name}))
       elif a.type == 'enumeration' and a.default == 'required':
         required_enumeration_declaration(a.name, tuple(a.values()))
       elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
-        print(IMPLIED_BOOL_ATTRIBUTE_DECLARATION.format(class_name = e.name, name = a.name), end='')
+        print(template('IMPLIED_BOOL_ATTRIBUTE_DECLARATION').render({'method':  a.name}))
     if e.name in methods:
-      print(methods[e.name]['declaration'])
+      print(methods[e.name]['declaration'], end='')
     print("};")
-
-REGISTRATION_TEMPLATE = """REGISTER_DEFINITION({name}, qname("{name}"), content::{type});"""
 
 def cpp():
   for e in bmml.iterelements():
@@ -211,14 +274,18 @@ def cpp():
     if type == 'any':
       type = 'mixed'
 
-    print(REGISTRATION_TEMPLATE.format(name = e.name, type = type))
+    print(template('REGISTER_DEFINITION').render({'class': e.name,
+                                                  'tag_name': e.name,
+                                                  'content_type': type}))
     for a in e.iterattributes():
       if (a.type == 'id' or a.type == 'cdata' or a.type == 'idref') and a.default == 'required':
-        print(REQUIRED_STRING_ATTRIBUTE_DEFINITION.format(class_name = e.name, name = a.name))
+        print(template('REQUIRED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
+      elif a.type == 'cdata' and a.default == 'implied':
+        print(template('IMPLIED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
       elif a.type == 'enumeration' and a.default == 'required':
         required_enumeration_definition(e.name, a.name, tuple(a.values()))
       elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
-        print(IMPLIED_BOOL_ATTRIBUTE_DEFINITION.format(class_name = e.name, name = a.name), end='')
+        print(template('IMPLIED_BOOL_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}), end='')
     if e.name in methods:
       print(methods[e.name]['definition'])
 
