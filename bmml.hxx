@@ -136,15 +136,71 @@ using boost::optional;
 
 // ------------------------------------------------------------------------- //
 
+enum class start_stop_continue {
+  start,
+  stop,
+  continue_
+};
+
+enum class left_right {
+  left,
+  right
+};
+
+enum class glissando_start_stop {
+  glissando,
+  start,
+  stop
+};
+
 enum class full_half_vertical {
   full,
   half,
   vertical
 };
 
-enum class natural_artificial {
-  natural,
-  artificial
+enum class above_below {
+  above,
+  below
+};
+
+enum class organ_pedal_t {
+  left_toe,
+  left_heel,
+  right_toe,
+  right_heel
+};
+
+enum class ambiguous_value {
+  eighth_or_128th,
+  quarter_or_64th,
+  half_or_32nd,
+  whole_or_16th,
+  brevis,
+  longa
+};
+
+enum class up_down {
+  up,
+  down
+};
+
+enum class value_prefix_t {
+  separator,
+  large,
+  small,
+  twohundredfiftysixth
+};
+
+enum class left_middle_right {
+  left,
+  middle,
+  right
+};
+
+enum class start_stop {
+  start,
+  stop
 };
 
 enum class diatonic_step {
@@ -157,64 +213,15 @@ enum class diatonic_step {
   G
 };
 
-enum class above_below {
-  above,
-  below
+enum class natural_artificial {
+  natural,
+  artificial
 };
 
 enum class full_half_caesura {
   full,
   half,
   caesura
-};
-
-enum class up_down {
-  up,
-  down
-};
-
-enum class glissando_start_stop {
-  glissando,
-  start,
-  stop
-};
-
-enum class start_stop {
-  start,
-  stop
-};
-
-enum class value_prefix_t {
-  separator,
-  large,
-  small,
-  twohundredfiftysixth
-};
-
-enum class left_right {
-  left,
-  right
-};
-
-enum class start_stop_continue {
-  start,
-  stop,
-  continue_
-};
-
-enum class ambiguous_value {
-  eighth_or_128th,
-  quarter_or_64th,
-  half_or_32nd,
-  whole_or_16th,
-  brevis,
-  longa
-};
-
-enum class left_middle_right {
-  left,
-  middle,
-  right
 };
 
 class abbr_name : public dom::element {
@@ -1087,6 +1094,12 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<organ_pedal_t> substitution() const;
+  void substitution(optional<organ_pedal_t>);
+
+  organ_pedal_t value() const;
+  void value(organ_pedal_t);
 };
 
 class ornament_type;

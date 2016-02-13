@@ -234,6 +234,7 @@ shared_ptr<bmml::score_data> bmml::score::data() const {
 }
 
 enumerations = {
+('left_toe', 'left_heel', 'right_toe', 'right_heel'): {'name': 'organ_pedal_t'},
 ('full', 'half', 'caesura'): {'name': 'full_half_caesura'},
 ('full', 'half', 'vertical'): {'name': 'full_half_vertical'},
 ('glissando', 'start', 'stop'): {'name': 'glissando_start_stop'},

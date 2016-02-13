@@ -2042,6 +2042,84 @@ void bmml::organ_pedal::id(std::string const& value) {
   attributes()[qname{"id"}] = value;
 }
 
+optional<bmml::organ_pedal_t> bmml::organ_pedal::substitution() const {
+  auto iter = attributes().find(qname{"substitution"});
+
+  if (iter != attributes().end()) {
+         if (iter->second == "left_toe") return { organ_pedal_t::left_toe };
+    else if (iter->second == "left_heel") return { organ_pedal_t::left_heel };
+    else if (iter->second == "right_toe") return { organ_pedal_t::right_toe };
+    else if (iter->second == "right_heel") return { organ_pedal_t::right_heel };
+  }
+
+  return {};
+}
+
+void bmml::organ_pedal::substitution(optional<bmml::organ_pedal_t> opt_value) {
+  if (opt_value) {
+    switch (*opt_value) {
+    case bmml::organ_pedal_t::left_toe:
+      attributes()[qname{"substitution"}] = "left_toe";
+      break;
+
+    case bmml::organ_pedal_t::left_heel:
+      attributes()[qname{"substitution"}] = "left_heel";
+      break;
+
+    case bmml::organ_pedal_t::right_toe:
+      attributes()[qname{"substitution"}] = "right_toe";
+      break;
+
+    case bmml::organ_pedal_t::right_heel:
+      attributes()[qname{"substitution"}] = "right_heel";
+      break;
+
+    default:
+      throw illegal_enumeration{};
+    }
+  } else {
+    attributes().erase(qname{"substitution"});
+  }
+}
+
+bmml::organ_pedal_t bmml::organ_pedal::value() const {
+  auto iter = attributes().find(qname{"value"});
+
+  if (iter != attributes().end()) {
+         if (iter->second == "left_toe") return organ_pedal_t::left_toe;
+    else if (iter->second == "left_heel") return organ_pedal_t::left_heel;
+    else if (iter->second == "right_toe") return organ_pedal_t::right_toe;
+    else if (iter->second == "right_heel") return organ_pedal_t::right_heel;
+
+    throw illegal_enumeration{};
+  }
+
+  throw missing_attribute{};
+}
+
+void bmml::organ_pedal::value(bmml::organ_pedal_t value) {
+  switch (value) {
+  case bmml::organ_pedal_t::left_toe:
+    attributes()[qname{"value"}] = "left_toe";
+    break;
+
+  case bmml::organ_pedal_t::left_heel:
+    attributes()[qname{"value"}] = "left_heel";
+    break;
+
+  case bmml::organ_pedal_t::right_toe:
+    attributes()[qname{"value"}] = "right_toe";
+    break;
+
+  case bmml::organ_pedal_t::right_heel:
+    attributes()[qname{"value"}] = "right_heel";
+    break;
+
+  default:
+    throw illegal_enumeration{};
+  }
+}
+
 REGISTER_DEFINITION(ornament, qname("ornament"), content::complex);
 
 std::string bmml::ornament::id() const {
