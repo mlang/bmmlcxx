@@ -136,9 +136,15 @@ using boost::optional;
 
 // ------------------------------------------------------------------------- //
 
-enum class left_right {
-  left,
-  right
+enum class full_half_vertical {
+  full,
+  half,
+  vertical
+};
+
+enum class natural_artificial {
+  natural,
+  artificial
 };
 
 enum class diatonic_step {
@@ -151,6 +157,51 @@ enum class diatonic_step {
   G
 };
 
+enum class above_below {
+  above,
+  below
+};
+
+enum class full_half_caesura {
+  full,
+  half,
+  caesura
+};
+
+enum class up_down {
+  up,
+  down
+};
+
+enum class glissando_start_stop {
+  glissando,
+  start,
+  stop
+};
+
+enum class start_stop {
+  start,
+  stop
+};
+
+enum class value_prefix_t {
+  separator,
+  large,
+  small,
+  twohundredfiftysixth
+};
+
+enum class left_right {
+  left,
+  right
+};
+
+enum class start_stop_continue {
+  start,
+  stop,
+  continue_
+};
+
 enum class ambiguous_value {
   eighth_or_128th,
   quarter_or_64th,
@@ -160,20 +211,10 @@ enum class ambiguous_value {
   longa
 };
 
-enum class start_stop {
-  start,
-  stop
-};
-
-enum class start_stop_continue {
-  start,
-  stop,
-  continue_
-};
-
-enum class up_down {
-  up,
-  down
+enum class left_middle_right {
+  left,
+  middle,
+  right
 };
 
 class abbr_name : public dom::element {
@@ -205,6 +246,9 @@ public:
 
   optional<std::string> step() const;
   void step(optional<std::string>);
+
+  optional<above_below> placement() const;
+  void placement(optional<above_below>);
 
   optional<std::string> cancel() const;
   void cancel(optional<std::string>);
@@ -297,6 +341,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<left_middle_right> type() const;
+  void type(optional<left_middle_right>);
 };
 
 class barline_type : public dom::element {
@@ -322,6 +369,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  full_half_vertical value() const;
+  void value(full_half_vertical);
 };
 
 class bow : public dom::element {
@@ -350,6 +400,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  full_half_caesura value() const;
+  void value(full_half_caesura);
 };
 
 class chord : public dom::element {
@@ -423,6 +476,9 @@ public:
 
   optional<bool> cross_staff() const;
   void cross_staff(optional<bool>);
+
+  optional<above_below> eight() const;
+  void eight(optional<above_below>);
 
   optional<std::string> line() const;
   void line(optional<std::string>);
@@ -585,6 +641,9 @@ public:
   std::string id() const;
   void id(std::string const&);
 
+  optional<up_down> chord_dir() const;
+  void chord_dir(optional<up_down>);
+
   left_right value() const;
   void value(left_right);
 };
@@ -601,6 +660,9 @@ public:
 
   optional<bool> doubled() const;
   void doubled(optional<bool>);
+
+  natural_artificial value() const;
+  void value(natural_artificial);
 };
 
 class inaccord : public dom::element {
@@ -1087,6 +1149,9 @@ public:
 
   optional<std::string> lang() const;
   void lang(optional<std::string>);
+
+  optional<up_down> chord_dir() const;
+  void chord_dir(optional<up_down>);
 };
 
 class part_list : public dom::element {
@@ -1341,6 +1406,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  glissando_start_stop value() const;
+  void value(glissando_start_stop);
 };
 
 class slur : public dom::element {
@@ -1452,6 +1520,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  optional<start_stop> line_of_continuation() const;
+  void line_of_continuation(optional<start_stop>);
 
   std::string value() const;
   void value(std::string const&);
@@ -1729,6 +1800,9 @@ public:
 
   std::string id() const;
   void id(std::string const&);
+
+  value_prefix_t value() const;
+  void value(value_prefix_t);
 };
 
 } // namespace bmml

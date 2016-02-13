@@ -64,9 +64,63 @@ void bmml::{{class}}::{{method}}(optional<bool> opt_value) {
 }
 """
 
-REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION = """
+ENUMERATION_ATTRIBUTE_DECLARATION = """
   {{type}} {{method}}() const;
   void {{method}}({{type}});
+"""
+
+REQUIRED_ENUMERATION_ATTRIBUTE_DEFINITION = """
+bmml::{{enum}} bmml::{{class}}::{{method}}() const {
+  auto iter = attributes().find(qname{"{{attribute}}"});
+
+  if (iter != attributes().end()) {
+{% for value in values %}    {% if not loop.first %}else {% else %}     {% endif %}if (iter->second == "{{value}}") return {{enum}}::{{value | mangle}};
+{% endfor %}
+    throw illegal_enumeration{};
+  }
+
+  throw missing_attribute{};
+}
+
+void bmml::{{class}}::{{method}}(bmml::{{enum}} value) {
+  switch (value) {
+{%- for value in values %}
+  case bmml::{{enum}}::{{value | mangle}}:
+    attributes()[qname{"{{attribute}}"}] = "{{value}}";
+    break;
+{% endfor %}
+  default:
+    throw illegal_enumeration{};
+  }
+}
+"""
+
+IMPLIED_ENUMERATION_ATTRIBUTE_DEFINITION = """
+optional<bmml::{{enum}}> bmml::{{class}}::{{method}}() const {
+  auto iter = attributes().find(qname{"{{attribute}}"});
+
+  if (iter != attributes().end()) {
+{% for value in values %}    {% if not loop.first %}else {% else %}     {% endif %}if (iter->second == "{{value}}") return { {{enum}}::{{value | mangle}} };
+{% endfor %}  }
+
+  return {};
+}
+
+void bmml::{{class}}::{{method}}(optional<bmml::{{enum}}> opt_value) {
+  if (opt_value) {
+    switch (*opt_value) {
+{%- for value in values %}
+    case bmml::{{enum}}::{{value | mangle}}:
+      attributes()[qname{"{{attribute}}"}] = "{{value}}";
+      break;
+{% endfor %}
+    default:
+      throw illegal_enumeration{};
+    }
+  } else {
+    attributes().erase(qname{"{{attribute}}"});
+  }
+}
 """
 
 IMPLIED_STRING_ATTRIBUTE_DECLARATION = """
@@ -112,6 +166,17 @@ REGISTER_DEFINITION({{class}}, qname("{{tag_name}}"), content::{{content_type}})
 """
 
 templates = Environment(loader=DictLoader(globals()))
+
+def mangle(name):
+  if name == '8th_or_128th':
+    name = 'eighth_or_128th'
+  elif name == 'continue':
+    name = 'continue_'
+  elif name == '256th':
+    name = 'twohundredfiftysixth'
+  return name
+
+templates.filters['mangle'] = mangle
 
 def template(name):
   return templates.get_template(name)
@@ -169,21 +234,21 @@ shared_ptr<bmml::score_data> bmml::score::data() const {
 }
 
 enumerations = {
+('full', 'half', 'caesura'): {'name': 'full_half_caesura'},
+('full', 'half', 'vertical'): {'name': 'full_half_vertical'},
+('glissando', 'start', 'stop'): {'name': 'glissando_start_stop'},
+('natural', 'artificial'): {'name': 'natural_artificial'},
 ('up', 'down'): {'name': 'up_down'},
+('above', 'below'): {'name': 'above_below'},
 ('8th_or_128th', 'quarter_or_64th', 'half_or_32nd', 'whole_or_16th',
  'brevis', 'longa'): {'name': 'ambiguous_value'},
 ('A', 'B', 'C', 'D', 'E', 'F', 'G'): {'name': 'diatonic_step'},
 ('start', 'stop'): {'name': 'start_stop'},
 ('start', 'stop', 'continue'): {'name': 'start_stop_continue'},
-('left', 'right'): {'name': 'left_right'}
+('left', 'right'): {'name': 'left_right'},
+('left', 'middle', 'right'): {'name': 'left_middle_right'},
+('separator', 'large', 'small', '256th'): {'name': 'value_prefix_t'}
 }
-
-def mangle(name):
-  if name == '8th_or_128th':
-    name = 'eighth_or_128th'
-  elif name == 'continue':
-    name = 'continue_'
-  return name
 
 def enum_defs():
   for key, value in enumerations.items():
@@ -194,56 +259,27 @@ enum class {name} {{
 """.format(name=value['name'],
            values=',\n  '.join(map(mangle, key))), end='')
 
-def required_enumeration_declaration(method_name, values):
+def enumeration_declaration(method_name, values, default):
   if values in enumerations:
-    enum_name = enumerations[values]['name']
-    print(template('REQUIRED_ENUMERATION_ATTRIBUTE_DECLARATION').render(
-            {'type': enum_name, 'method': method_name}))
+    type = enumerations[values]['name']
+    if default == 'implied':
+      type = """optional<{}>""".format(type)
+    print(template('ENUMERATION_ATTRIBUTE_DECLARATION').render(
+            {'type': type, 'method': method_name}))
 
 def required_enumeration_definition(class_name, method_name, values):
   if values in enumerations:
     enum_name = enumerations[values]['name']
-    print("""
-bmml::{enum_name} bmml::{class_name}::{method_name}() const {{
-  auto iter = attributes().find(qname("{attribute_name}"));
-  if (iter != attributes().end()) {{
-""".format(enum_name=enum_name,
-           class_name=class_name,
-           method_name=method_name,
-           attribute_name=method_name), end='')
-    first = True
-    for enum in values:
-      if first:
-        print("         if ", end='')
-      else:
-        print("    else if ", end='')
-      print("""(iter->second == "{name}") return {enum_name}::{enum};""".format(name=enum, enum_name=enum_name, enum=mangle(enum)))
-      first = False
-    print("""
-    throw illegal_enumeration();
-  }
+    print(template('REQUIRED_ENUMERATION_ATTRIBUTE_DEFINITION').render(
+      {'class': class_name, 'method': method_name, 'attribute': method_name,
+       'enum': enum_name, 'values': values}))
 
-  throw missing_attribute();
-}
-""", end='')
-
-    #--------------------------------------------------------------------------
-
-    print("""
-void bmml::{class_name}::{method_name}(bmml::{enum_name} value) {{
-  switch (value) {{
-""".format(enum_name=enum_name, method_name=method_name, class_name=class_name), end='')
-    for enum in values:
-      print("""  case bmml::{enum_name}::{enum}:
-    attributes()[qname("{attribute_name}")] = "{text}";
-    break;
-""".format(enum_name=enum_name, enum=mangle(enum), text=enum, attribute_name=method_name), end='')
-    print("""
-  default:
-    throw illegal_enumeration();
-  }
-}
-""")
+def implied_enumeration_definition(class_name, method_name, values):
+  if values in enumerations:
+    enum_name = enumerations[values]['name']
+    print(template('IMPLIED_ENUMERATION_ATTRIBUTE_DEFINITION').render(
+      {'class': class_name, 'method': method_name, 'attribute': method_name,
+       'enum': enum_name, 'values': values}))
 
 def hpp():
   enum_defs()
@@ -256,8 +292,8 @@ def hpp():
         print(template('REQUIRED_STRING_ATTRIBUTE_DECLARATION').render({'method': a.name}))
       elif a.type == 'cdata' and a.default == 'implied':
         print(template('IMPLIED_STRING_ATTRIBUTE_DECLARATION').render({'method': a.name}))
-      elif a.type == 'enumeration' and a.default == 'required':
-        required_enumeration_declaration(a.name, tuple(a.values()))
+      elif a.type == 'enumeration' and a.values() != ['true','false']:
+        enumeration_declaration(a.name, tuple(a.values()), a.default)
       elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
         print(template('IMPLIED_BOOL_ATTRIBUTE_DECLARATION').render({'method':  a.name}))
     if e.name in methods:
@@ -282,10 +318,12 @@ def cpp():
         print(template('REQUIRED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
       elif a.type == 'cdata' and a.default == 'implied':
         print(template('IMPLIED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
+      elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
+        print(template('IMPLIED_BOOL_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
       elif a.type == 'enumeration' and a.default == 'required':
         required_enumeration_definition(e.name, a.name, tuple(a.values()))
-      elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
-        print(template('IMPLIED_BOOL_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}), end='')
+      elif a.type == 'enumeration' and a.default == 'implied':
+        implied_enumeration_definition(e.name, a.name, tuple(a.values()))
     if e.name in methods:
       print(methods[e.name]['definition'])
 
