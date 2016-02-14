@@ -47,11 +47,17 @@ public:
   const elements_type& elements () const {return elements_;}
   elements_type& elements () {return elements_;}
 
+  elements_type::const_iterator begin() const { return elements_.begin(); }
+  elements_type::const_iterator end() const { return elements_.end(); }
+  elements_type::iterator begin() { return elements_.begin(); }
+  elements_type::iterator end() { return elements_.end(); }
+
   template<typename T> std::shared_ptr<T> find_element() const {
     for (auto &&e : elements_)
       if (auto t = std::dynamic_pointer_cast<T>(e)) return t;
     return {};
   }
+
   template<typename T> std::vector<std::shared_ptr<T>> find_elements() const {
     std::vector<std::shared_ptr<T>> result;
     for (auto &&e : elements_)
@@ -136,10 +142,46 @@ using boost::optional;
 
 // ------------------------------------------------------------------------- //
 
-enum class start_stop_continue {
-  start,
-  stop,
-  continue_
+enum class inaccord_t {
+  full,
+  part,
+  division
+};
+
+enum class full_half_vertical {
+  full,
+  half,
+  vertical
+};
+
+enum class left_middle_right {
+  left,
+  middle,
+  right
+};
+
+enum class up_down {
+  up,
+  down
+};
+
+enum class diatonic_step {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G
+};
+
+enum class ambiguous_value {
+  eighth_or_128th,
+  quarter_or_64th,
+  half_or_32nd,
+  whole_or_16th,
+  brevis,
+  longa
 };
 
 enum class left_right {
@@ -153,10 +195,16 @@ enum class glissando_start_stop {
   stop
 };
 
-enum class full_half_vertical {
-  full,
-  half,
-  vertical
+enum class natural_artificial {
+  natural,
+  artificial
+};
+
+enum class value_prefix_t {
+  separator,
+  large,
+  small,
+  twohundredfiftysixth
 };
 
 enum class above_below {
@@ -171,57 +219,21 @@ enum class organ_pedal_t {
   right_heel
 };
 
-enum class ambiguous_value {
-  eighth_or_128th,
-  quarter_or_64th,
-  half_or_32nd,
-  whole_or_16th,
-  brevis,
-  longa
-};
-
-enum class up_down {
-  up,
-  down
-};
-
-enum class value_prefix_t {
-  separator,
-  large,
-  small,
-  twohundredfiftysixth
-};
-
-enum class left_middle_right {
-  left,
-  middle,
-  right
-};
-
-enum class start_stop {
+enum class start_stop_continue {
   start,
-  stop
-};
-
-enum class diatonic_step {
-  A,
-  B,
-  C,
-  D,
-  E,
-  F,
-  G
-};
-
-enum class natural_artificial {
-  natural,
-  artificial
+  stop,
+  continue_
 };
 
 enum class full_half_caesura {
   full,
   half,
   caesura
+};
+
+enum class start_stop {
+  start,
+  stop
 };
 
 class abbr_name : public dom::element {
@@ -298,6 +310,9 @@ class alteration : public dom::element {
 public:
   alteration(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
   }
+
+  operator int() const;
+  alteration& operator=(int);
 };
 
 class alternation : public dom::element {
@@ -527,6 +542,7 @@ public:
   }
 
   operator int() const;
+  duration& operator=(int);
 };
 
 class dynamic : public dom::element {
@@ -682,8 +698,8 @@ public:
   std::string id() const;
   void id(std::string const&);
 
-  std::string value() const;
-  void value(std::string const&);
+  inaccord_t value() const;
+  void value(inaccord_t);
 };
 
 class interval : public dom::element {
@@ -1208,6 +1224,7 @@ public:
   }
 
   operator int() const;
+  pitch& operator=(int);
 };
 
 class pizzicato : public dom::element {
@@ -1817,6 +1834,20 @@ public:
   value_prefix_t value() const;
   void value(value_prefix_t);
 };
+
+template<typename T>
+typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
+operator<<(std::ostream &os, std::shared_ptr<T> e) {
+  if (!std::dynamic_pointer_cast<note_data>(e) &&
+      !std::dynamic_pointer_cast<rest_data>(e) &&
+      !std::dynamic_pointer_cast<score_header>(e))
+  {
+    auto const& text = e->text();
+    if (text.empty()) for (auto c : *e) os << c; else os << text;
+  }
+
+  return os;
+}
 
 } // namespace bmml
 

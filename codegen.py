@@ -151,12 +151,18 @@ void bmml::{{class}}::{{method}}(optional<std::string> opt_value) {
 
 PCDATA_OPERATOR_DECLARATION = """
   operator {{type}}() const;
+  {{class}}& operator=({{type}});
 
 """
 
 PCDATA_OPERATOR_DEFINITION = """
 bmml::{{class}}::operator {{type}}() const {
   return boost::lexical_cast<{{type}}>(text());
+}
+
+bmml::{{class}}& bmml::{{class}}::operator=({{type}} value) {
+  text(boost::lexical_cast<std::string>(value));
+  return *this;
 }
 
 """
@@ -168,13 +174,9 @@ REGISTER_DEFINITION({{class}}, qname("{{tag_name}}"), content::{{content_type}})
 templates = Environment(loader=DictLoader(globals()))
 
 def mangle(name):
-  if name == '8th_or_128th':
-    name = 'eighth_or_128th'
-  elif name == 'continue':
-    name = 'continue_'
-  elif name == '256th':
-    name = 'twohundredfiftysixth'
-  return name
+  return {'8th_or_128th': 'eighth_or_128th',
+          '256th': 'twohundredfiftysixth',
+          'continue': 'continue_'}.get(name, name)
 
 templates.filters['mangle'] = mangle
 
@@ -192,11 +194,6 @@ class score_data;
 }
 
 methods = {
-  'duration': {
-    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'type': 'int'}),
-    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': 'duration',
-                                                                 'type': 'int'})
-  },
   'ornament': {
     'declaration': """
   std::vector<std::shared_ptr<accidental>> accidentals() const;
@@ -211,11 +208,6 @@ shared_ptr<bmml::ornament_type> bmml::ornament::ornament_type() const {
   return find_element<bmml::ornament_type>();
 }
 """
-  },
-  'pitch': {
-    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'type': 'int'}),
-    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': 'pitch',
-                                                                 'type': 'int'})
   },
   'score': {
     'declaration': """
@@ -233,7 +225,16 @@ shared_ptr<bmml::score_data> bmml::score::data() const {
 """}
 }
 
+for element in ['alteration', 'duration', 'pitch']:
+  methods[element] = {
+    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'class': element,
+                                                                   'type': 'int'}),
+    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': element,
+                                                                 'type': 'int'})
+  }
+
 enumerations = {
+('full', 'part', 'division'): {'name': 'inaccord_t'},
 ('left_toe', 'left_heel', 'right_toe', 'right_heel'): {'name': 'organ_pedal_t'},
 ('full', 'half', 'caesura'): {'name': 'full_half_caesura'},
 ('full', 'half', 'vertical'): {'name': 'full_half_vertical'},

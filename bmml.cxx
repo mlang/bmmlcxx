@@ -275,6 +275,16 @@ void bmml::accordion_row::value(std::string const& value) {
 
 REGISTER_DEFINITION(alteration, qname("alteration"), content::simple);
 
+bmml::alteration::operator int() const {
+  return boost::lexical_cast<int>(text());
+}
+
+bmml::alteration& bmml::alteration::operator=(int value) {
+  text(boost::lexical_cast<std::string>(value));
+  return *this;
+}
+
+
 REGISTER_DEFINITION(alternation, qname("alternation"), content::simple);
 
 std::string bmml::alternation::id() const {
@@ -861,6 +871,11 @@ bmml::duration::operator int() const {
   return boost::lexical_cast<int>(text());
 }
 
+bmml::duration& bmml::duration::operator=(int value) {
+  text(boost::lexical_cast<std::string>(value));
+  return *this;
+}
+
 
 REGISTER_DEFINITION(dynamic, qname("dynamic"), content::simple);
 
@@ -1240,15 +1255,37 @@ void bmml::inaccord::id(std::string const& value) {
   attributes()[qname{"id"}] = value;
 }
 
-std::string bmml::inaccord::value() const {
+bmml::inaccord_t bmml::inaccord::value() const {
   auto iter = attributes().find(qname{"value"});
-  if (iter != attributes().end()) return iter->second;
+
+  if (iter != attributes().end()) {
+         if (iter->second == "full") return inaccord_t::full;
+    else if (iter->second == "part") return inaccord_t::part;
+    else if (iter->second == "division") return inaccord_t::division;
+
+    throw illegal_enumeration{};
+  }
 
   throw missing_attribute{};
 }
 
-void bmml::inaccord::value(std::string const& value) {
-  attributes()[qname{"value"}] = value;
+void bmml::inaccord::value(bmml::inaccord_t value) {
+  switch (value) {
+  case bmml::inaccord_t::full:
+    attributes()[qname{"value"}] = "full";
+    break;
+
+  case bmml::inaccord_t::part:
+    attributes()[qname{"value"}] = "part";
+    break;
+
+  case bmml::inaccord_t::division:
+    attributes()[qname{"value"}] = "division";
+    break;
+
+  default:
+    throw illegal_enumeration{};
+  }
 }
 
 REGISTER_DEFINITION(interval, qname("interval"), content::complex);
@@ -2327,6 +2364,11 @@ REGISTER_DEFINITION(pitch, qname("pitch"), content::simple);
 
 bmml::pitch::operator int() const {
   return boost::lexical_cast<int>(text());
+}
+
+bmml::pitch& bmml::pitch::operator=(int value) {
+  text(boost::lexical_cast<std::string>(value));
+  return *this;
 }
 
 
