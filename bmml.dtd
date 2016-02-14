@@ -366,7 +366,7 @@
             right_string_fingering|fermata|
             unknown)+)>
 <!ATTLIST part
-    %id;>
+    %id_ref;>
 
 <!ELEMENT part_data (name, abbr_name?, clef?, midi_instrument?, family?)>
 <!ATTLIST part_data
