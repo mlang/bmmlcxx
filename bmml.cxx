@@ -182,7 +182,6 @@ void bmml::accidental::placement(optional<bmml::above_below> opt_value) {
     case bmml::above_below::above:
       attributes()[qname{"placement"}] = "above";
       break;
-
     case bmml::above_below::below:
       attributes()[qname{"placement"}] = "below";
       break;
@@ -340,7 +339,6 @@ void bmml::alternation_ref::type(bmml::start_stop value) {
   case bmml::start_stop::start:
     attributes()[qname{"type"}] = "start";
     break;
-
   case bmml::start_stop::stop:
     attributes()[qname{"type"}] = "stop";
     break;
@@ -394,11 +392,9 @@ void bmml::barline::type(optional<bmml::left_middle_right> opt_value) {
     case bmml::left_middle_right::left:
       attributes()[qname{"type"}] = "left";
       break;
-
     case bmml::left_middle_right::middle:
       attributes()[qname{"type"}] = "middle";
       break;
-
     case bmml::left_middle_right::right:
       attributes()[qname{"type"}] = "right";
       break;
@@ -467,11 +463,9 @@ void bmml::barre::value(bmml::full_half_vertical value) {
   case bmml::full_half_vertical::full:
     attributes()[qname{"value"}] = "full";
     break;
-
   case bmml::full_half_vertical::half:
     attributes()[qname{"value"}] = "half";
     break;
-
   case bmml::full_half_vertical::vertical:
     attributes()[qname{"value"}] = "vertical";
     break;
@@ -536,7 +530,6 @@ void bmml::bow::value(bmml::up_down value) {
   case bmml::up_down::up:
     attributes()[qname{"value"}] = "up";
     break;
-
   case bmml::up_down::down:
     attributes()[qname{"value"}] = "down";
     break;
@@ -578,11 +571,9 @@ void bmml::breath::value(bmml::full_half_caesura value) {
   case bmml::full_half_caesura::full:
     attributes()[qname{"value"}] = "full";
     break;
-
   case bmml::full_half_caesura::half:
     attributes()[qname{"value"}] = "half";
     break;
-
   case bmml::full_half_caesura::caesura:
     attributes()[qname{"value"}] = "caesura";
     break;
@@ -785,7 +776,6 @@ void bmml::clef::eight(optional<bmml::above_below> opt_value) {
     case bmml::above_below::above:
       attributes()[qname{"eight"}] = "above";
       break;
-
     case bmml::above_below::below:
       attributes()[qname{"eight"}] = "below";
       break;
@@ -1136,7 +1126,6 @@ void bmml::hand::chord_dir(optional<bmml::up_down> opt_value) {
     case bmml::up_down::up:
       attributes()[qname{"chord_dir"}] = "up";
       break;
-
     case bmml::up_down::down:
       attributes()[qname{"chord_dir"}] = "down";
       break;
@@ -1167,7 +1156,6 @@ void bmml::hand::value(bmml::left_right value) {
   case bmml::left_right::left:
     attributes()[qname{"value"}] = "left";
     break;
-
   case bmml::left_right::right:
     attributes()[qname{"value"}] = "right";
     break;
@@ -1232,7 +1220,6 @@ void bmml::harmonic::value(bmml::natural_artificial value) {
   case bmml::natural_artificial::natural:
     attributes()[qname{"value"}] = "natural";
     break;
-
   case bmml::natural_artificial::artificial:
     attributes()[qname{"value"}] = "artificial";
     break;
@@ -1274,11 +1261,9 @@ void bmml::inaccord::value(bmml::inaccord_t value) {
   case bmml::inaccord_t::full:
     attributes()[qname{"value"}] = "full";
     break;
-
   case bmml::inaccord_t::part:
     attributes()[qname{"value"}] = "part";
     break;
-
   case bmml::inaccord_t::division:
     attributes()[qname{"value"}] = "division";
     break;
@@ -1440,7 +1425,6 @@ void bmml::line_of_continuation::value(bmml::start_stop value) {
   case bmml::start_stop::start:
     attributes()[qname{"value"}] = "start";
     break;
-
   case bmml::start_stop::stop:
     attributes()[qname{"value"}] = "stop";
     break;
@@ -1658,23 +1642,18 @@ void bmml::metronome_note_type::value(bmml::ambiguous_value value) {
   case bmml::ambiguous_value::eighth_or_128th:
     attributes()[qname{"value"}] = "8th_or_128th";
     break;
-
   case bmml::ambiguous_value::quarter_or_64th:
     attributes()[qname{"value"}] = "quarter_or_64th";
     break;
-
   case bmml::ambiguous_value::half_or_32nd:
     attributes()[qname{"value"}] = "half_or_32nd";
     break;
-
   case bmml::ambiguous_value::whole_or_16th:
     attributes()[qname{"value"}] = "whole_or_16th";
     break;
-
   case bmml::ambiguous_value::brevis:
     attributes()[qname{"value"}] = "brevis";
     break;
-
   case bmml::ambiguous_value::longa:
     attributes()[qname{"value"}] = "longa";
     break;
@@ -1857,23 +1836,18 @@ void bmml::note_type::value(bmml::ambiguous_value value) {
   case bmml::ambiguous_value::eighth_or_128th:
     attributes()[qname{"value"}] = "8th_or_128th";
     break;
-
   case bmml::ambiguous_value::quarter_or_64th:
     attributes()[qname{"value"}] = "quarter_or_64th";
     break;
-
   case bmml::ambiguous_value::half_or_32nd:
     attributes()[qname{"value"}] = "half_or_32nd";
     break;
-
   case bmml::ambiguous_value::whole_or_16th:
     attributes()[qname{"value"}] = "whole_or_16th";
     break;
-
   case bmml::ambiguous_value::brevis:
     attributes()[qname{"value"}] = "brevis";
     break;
-
   case bmml::ambiguous_value::longa:
     attributes()[qname{"value"}] = "longa";
     break;
@@ -1906,27 +1880,21 @@ void bmml::note_type::name(bmml::diatonic_step value) {
   case bmml::diatonic_step::A:
     attributes()[qname{"name"}] = "A";
     break;
-
   case bmml::diatonic_step::B:
     attributes()[qname{"name"}] = "B";
     break;
-
   case bmml::diatonic_step::C:
     attributes()[qname{"name"}] = "C";
     break;
-
   case bmml::diatonic_step::D:
     attributes()[qname{"name"}] = "D";
     break;
-
   case bmml::diatonic_step::E:
     attributes()[qname{"name"}] = "E";
     break;
-
   case bmml::diatonic_step::F:
     attributes()[qname{"name"}] = "F";
     break;
-
   case bmml::diatonic_step::G:
     attributes()[qname{"name"}] = "G";
     break;
@@ -2098,15 +2066,12 @@ void bmml::organ_pedal::substitution(optional<bmml::organ_pedal_t> opt_value) {
     case bmml::organ_pedal_t::left_toe:
       attributes()[qname{"substitution"}] = "left_toe";
       break;
-
     case bmml::organ_pedal_t::left_heel:
       attributes()[qname{"substitution"}] = "left_heel";
       break;
-
     case bmml::organ_pedal_t::right_toe:
       attributes()[qname{"substitution"}] = "right_toe";
       break;
-
     case bmml::organ_pedal_t::right_heel:
       attributes()[qname{"substitution"}] = "right_heel";
       break;
@@ -2139,15 +2104,12 @@ void bmml::organ_pedal::value(bmml::organ_pedal_t value) {
   case bmml::organ_pedal_t::left_toe:
     attributes()[qname{"value"}] = "left_toe";
     break;
-
   case bmml::organ_pedal_t::left_heel:
     attributes()[qname{"value"}] = "left_heel";
     break;
-
   case bmml::organ_pedal_t::right_toe:
     attributes()[qname{"value"}] = "right_toe";
     break;
-
   case bmml::organ_pedal_t::right_heel:
     attributes()[qname{"value"}] = "right_heel";
     break;
@@ -2308,7 +2270,6 @@ void bmml::part_data::chord_dir(optional<bmml::up_down> opt_value) {
     case bmml::up_down::up:
       attributes()[qname{"chord_dir"}] = "up";
       break;
-
     case bmml::up_down::down:
       attributes()[qname{"chord_dir"}] = "down";
       break;
@@ -2427,7 +2388,6 @@ void bmml::pizzicato::value(bmml::left_right value) {
   case bmml::left_right::left:
     attributes()[qname{"value"}] = "left";
     break;
-
   case bmml::left_right::right:
     attributes()[qname{"value"}] = "right";
     break;
@@ -2468,7 +2428,6 @@ void bmml::rasgueado::value(bmml::up_down value) {
   case bmml::up_down::up:
     attributes()[qname{"value"}] = "up";
     break;
-
   case bmml::up_down::down:
     attributes()[qname{"value"}] = "down";
     break;
@@ -2620,23 +2579,18 @@ void bmml::rest_type::value(bmml::ambiguous_value value) {
   case bmml::ambiguous_value::eighth_or_128th:
     attributes()[qname{"value"}] = "8th_or_128th";
     break;
-
   case bmml::ambiguous_value::quarter_or_64th:
     attributes()[qname{"value"}] = "quarter_or_64th";
     break;
-
   case bmml::ambiguous_value::half_or_32nd:
     attributes()[qname{"value"}] = "half_or_32nd";
     break;
-
   case bmml::ambiguous_value::whole_or_16th:
     attributes()[qname{"value"}] = "whole_or_16th";
     break;
-
   case bmml::ambiguous_value::brevis:
     attributes()[qname{"value"}] = "brevis";
     break;
-
   case bmml::ambiguous_value::longa:
     attributes()[qname{"value"}] = "longa";
     break;
@@ -2756,11 +2710,9 @@ void bmml::shift_line::value(bmml::glissando_start_stop value) {
   case bmml::glissando_start_stop::glissando:
     attributes()[qname{"value"}] = "glissando";
     break;
-
   case bmml::glissando_start_stop::start:
     attributes()[qname{"value"}] = "start";
     break;
-
   case bmml::glissando_start_stop::stop:
     attributes()[qname{"value"}] = "stop";
     break;
@@ -2837,11 +2789,9 @@ void bmml::slur_ref::type(bmml::start_stop_continue value) {
   case bmml::start_stop_continue::start:
     attributes()[qname{"type"}] = "start";
     break;
-
   case bmml::start_stop_continue::stop:
     attributes()[qname{"type"}] = "stop";
     break;
-
   case bmml::start_stop_continue::continue_:
     attributes()[qname{"type"}] = "continue";
     break;
@@ -2983,7 +2933,6 @@ void bmml::string_fingering::line_of_continuation(optional<bmml::start_stop> opt
     case bmml::start_stop::start:
       attributes()[qname{"line_of_continuation"}] = "start";
       break;
-
     case bmml::start_stop::stop:
       attributes()[qname{"line_of_continuation"}] = "stop";
       break;
@@ -3086,7 +3035,6 @@ void bmml::stroke::value(bmml::up_down value) {
   case bmml::up_down::up:
     attributes()[qname{"value"}] = "up";
     break;
-
   case bmml::up_down::down:
     attributes()[qname{"value"}] = "down";
     break;
@@ -3345,7 +3293,6 @@ void bmml::tie_ref::type(bmml::start_stop value) {
   case bmml::start_stop::start:
     attributes()[qname{"type"}] = "start";
     break;
-
   case bmml::start_stop::stop:
     attributes()[qname{"type"}] = "stop";
     break;
@@ -3570,11 +3517,9 @@ void bmml::tuplet_ref::type(bmml::start_stop_continue value) {
   case bmml::start_stop_continue::start:
     attributes()[qname{"type"}] = "start";
     break;
-
   case bmml::start_stop_continue::stop:
     attributes()[qname{"type"}] = "stop";
     break;
-
   case bmml::start_stop_continue::continue_:
     attributes()[qname{"type"}] = "continue";
     break;
@@ -3643,15 +3588,12 @@ void bmml::value_prefix::value(bmml::value_prefix_t value) {
   case bmml::value_prefix_t::separator:
     attributes()[qname{"value"}] = "separator";
     break;
-
   case bmml::value_prefix_t::large:
     attributes()[qname{"value"}] = "large";
     break;
-
   case bmml::value_prefix_t::small:
     attributes()[qname{"value"}] = "small";
     break;
-
   case bmml::value_prefix_t::twohundredfiftysixth:
     attributes()[qname{"value"}] = "256th";
     break;

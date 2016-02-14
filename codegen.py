@@ -74,8 +74,11 @@ bmml::{{enum}} bmml::{{class}}::{{method}}() const {
   auto iter = attributes().find(qname{"{{attribute}}"});
 
   if (iter != attributes().end()) {
-{% for value in values %}    {% if not loop.first %}else {% else %}     {% endif %}if (iter->second == "{{value}}") return {{enum}}::{{value | mangle}};
-{% endfor %}
+{%- for value in values %}
+    {% if not loop.first %}else {% else %}     {% endif -%}
+    if (iter->second == "{{value}}") return {{enum}}::{{value | mangle}};
+{%- endfor %}
+
     throw illegal_enumeration{};
   }
 
@@ -88,7 +91,8 @@ void bmml::{{class}}::{{method}}(bmml::{{enum}} value) {
   case bmml::{{enum}}::{{value | mangle}}:
     attributes()[qname{"{{attribute}}"}] = "{{value}}";
     break;
-{% endfor %}
+{%- endfor %}
+
   default:
     throw illegal_enumeration{};
   }
@@ -100,8 +104,11 @@ optional<bmml::{{enum}}> bmml::{{class}}::{{method}}() const {
   auto iter = attributes().find(qname{"{{attribute}}"});
 
   if (iter != attributes().end()) {
-{% for value in values %}    {% if not loop.first %}else {% else %}     {% endif %}if (iter->second == "{{value}}") return { {{enum}}::{{value | mangle}} };
-{% endfor %}  }
+{%- for value in values %}
+    {% if not loop.first %}else {% else %}     {% endif -%}
+    if (iter->second == "{{value}}") return { {{enum}}::{{value | mangle}} };
+{%- endfor %}
+  }
 
   return {};
 }
@@ -113,7 +120,8 @@ void bmml::{{class}}::{{method}}(optional<bmml::{{enum}}> opt_value) {
     case bmml::{{enum}}::{{value | mangle}}:
       attributes()[qname{"{{attribute}}"}] = "{{value}}";
       break;
-{% endfor %}
+{%- endfor %}
+
     default:
       throw illegal_enumeration{};
     }

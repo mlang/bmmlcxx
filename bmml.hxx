@@ -142,16 +142,32 @@ using boost::optional;
 
 // ------------------------------------------------------------------------- //
 
-enum class inaccord_t {
-  full,
-  part,
-  division
+enum class ambiguous_value {
+  eighth_or_128th,
+  quarter_or_64th,
+  half_or_32nd,
+  whole_or_16th,
+  brevis,
+  longa
 };
 
-enum class full_half_vertical {
+enum class full_half_caesura {
   full,
   half,
-  vertical
+  caesura
+};
+
+enum class glissando_start_stop {
+  glissando,
+  start,
+  stop
+};
+
+enum class value_prefix_t {
+  separator,
+  large,
+  small,
+  twohundredfiftysixth
 };
 
 enum class left_middle_right {
@@ -160,9 +176,27 @@ enum class left_middle_right {
   right
 };
 
+enum class natural_artificial {
+  natural,
+  artificial
+};
+
 enum class up_down {
   up,
   down
+};
+
+enum class inaccord_t {
+  full,
+  part,
+  division
+};
+
+enum class organ_pedal_t {
+  left_toe,
+  left_heel,
+  right_toe,
+  right_heel
 };
 
 enum class diatonic_step {
@@ -175,13 +209,14 @@ enum class diatonic_step {
   G
 };
 
-enum class ambiguous_value {
-  eighth_or_128th,
-  quarter_or_64th,
-  half_or_32nd,
-  whole_or_16th,
-  brevis,
-  longa
+enum class above_below {
+  above,
+  below
+};
+
+enum class start_stop {
+  start,
+  stop
 };
 
 enum class left_right {
@@ -189,51 +224,16 @@ enum class left_right {
   right
 };
 
-enum class glissando_start_stop {
-  glissando,
-  start,
-  stop
-};
-
-enum class natural_artificial {
-  natural,
-  artificial
-};
-
-enum class value_prefix_t {
-  separator,
-  large,
-  small,
-  twohundredfiftysixth
-};
-
-enum class above_below {
-  above,
-  below
-};
-
-enum class organ_pedal_t {
-  left_toe,
-  left_heel,
-  right_toe,
-  right_heel
+enum class full_half_vertical {
+  full,
+  half,
+  vertical
 };
 
 enum class start_stop_continue {
   start,
   stop,
   continue_
-};
-
-enum class full_half_caesura {
-  full,
-  half,
-  caesura
-};
-
-enum class start_stop {
-  start,
-  stop
 };
 
 class abbr_name : public dom::element {
