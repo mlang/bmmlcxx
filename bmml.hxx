@@ -1,3 +1,4 @@
+
 #ifndef BMML_HXX
 #define BMML_HXX
 
@@ -141,6 +142,10 @@ public:
 using boost::optional;
 
 // ------------------------------------------------------------------------- //
+enum class above_below {
+  above,
+  below
+};
 
 enum class ambiguous_value {
   eighth_or_128th,
@@ -149,54 +154,6 @@ enum class ambiguous_value {
   whole_or_16th,
   brevis,
   longa
-};
-
-enum class full_half_caesura {
-  full,
-  half,
-  caesura
-};
-
-enum class glissando_start_stop {
-  glissando,
-  start,
-  stop
-};
-
-enum class value_prefix_t {
-  separator,
-  large,
-  small,
-  twohundredfiftysixth
-};
-
-enum class left_middle_right {
-  left,
-  middle,
-  right
-};
-
-enum class natural_artificial {
-  natural,
-  artificial
-};
-
-enum class up_down {
-  up,
-  down
-};
-
-enum class inaccord_t {
-  full,
-  part,
-  division
-};
-
-enum class organ_pedal_t {
-  left_toe,
-  left_heel,
-  right_toe,
-  right_heel
 };
 
 enum class diatonic_step {
@@ -209,19 +166,10 @@ enum class diatonic_step {
   G
 };
 
-enum class above_below {
-  above,
-  below
-};
-
-enum class start_stop {
-  start,
-  stop
-};
-
-enum class left_right {
-  left,
-  right
+enum class full_half_caesura {
+  full,
+  half,
+  caesura
 };
 
 enum class full_half_vertical {
@@ -230,11 +178,64 @@ enum class full_half_vertical {
   vertical
 };
 
+enum class glissando_start_stop {
+  glissando,
+  start,
+  stop
+};
+
+enum class inaccord_t {
+  full,
+  part,
+  division
+};
+
+enum class left_middle_right {
+  left,
+  middle,
+  right
+};
+
+enum class left_right {
+  left,
+  right
+};
+
+enum class natural_artificial {
+  natural,
+  artificial
+};
+
+enum class organ_pedal_t {
+  left_toe,
+  left_heel,
+  right_toe,
+  right_heel
+};
+
+enum class start_stop {
+  start,
+  stop
+};
+
 enum class start_stop_continue {
   start,
   stop,
   continue_
 };
+
+enum class up_down {
+  up,
+  down
+};
+
+enum class value_prefix_t {
+  separator,
+  large,
+  small,
+  twohundredfiftysixth
+};
+
 
 class abbr_name : public dom::element {
   REGISTER_DECLARATION(abbr_name);
@@ -313,6 +314,7 @@ public:
 
   operator int() const;
   alteration& operator=(int);
+
 };
 
 class alternation : public dom::element {
@@ -543,6 +545,7 @@ public:
 
   operator int() const;
   duration& operator=(int);
+
 };
 
 class dynamic : public dom::element {
@@ -1117,9 +1120,7 @@ public:
   organ_pedal_t value() const;
   void value(organ_pedal_t);
 };
-
 class ornament_type;
-
 
 class ornament : public dom::element {
   REGISTER_DECLARATION(ornament);
@@ -1133,6 +1134,7 @@ public:
 
   std::vector<std::shared_ptr<accidental>> accidentals() const;
   std::shared_ptr<bmml::ornament_type> ornament_type() const;
+
 };
 
 class ornament_type : public dom::element {
@@ -1225,6 +1227,7 @@ public:
 
   operator int() const;
   pitch& operator=(int);
+
 };
 
 class pizzicato : public dom::element {
@@ -1370,10 +1373,8 @@ public:
   std::string value() const;
   void value(std::string const&);
 };
-
-class score_header;
 class score_data;
-
+class score_header;
 
 class score : public dom::element {
   REGISTER_DECLARATION(score);
@@ -1387,6 +1388,7 @@ public:
 
   std::shared_ptr<score_header> header() const;
   std::shared_ptr<score_data> data() const;
+
 };
 
 class score_data : public dom::element {
@@ -1834,6 +1836,8 @@ public:
   value_prefix_t value() const;
   void value(value_prefix_t);
 };
+
+// ------------------------------------------------------------------------- //
 
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
