@@ -1,3 +1,4 @@
+
 #include "bmml.hxx"
 
 #include <iostream>
@@ -81,6 +82,7 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
 
   if (start_end) s.end_element ();
 }
+
 
 REGISTER_DEFINITION(abbr_name, qname("abbr_name"), content::simple);
 
@@ -177,20 +179,22 @@ optional<bmml::above_below> bmml::accidental::placement() const {
 }
 
 void bmml::accidental::placement(optional<bmml::above_below> opt_value) {
+  static const qname attr{"placement"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::above_below::above:
-      attributes()[qname{"placement"}] = "above";
+    case above_below::above:
+      attributes()[attr] = "above";
       break;
-    case bmml::above_below::below:
-      attributes()[qname{"placement"}] = "below";
+    case above_below::below:
+      attributes()[attr] = "below";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"placement"});
+    attributes().erase(attr);
   }
 }
 
@@ -273,7 +277,6 @@ void bmml::accordion_row::value(std::string const& value) {
 }
 
 REGISTER_DEFINITION(alteration, qname("alteration"), content::simple);
-
 bmml::alteration::operator int() const {
   return boost::lexical_cast<int>(text());
 }
@@ -282,7 +285,6 @@ bmml::alteration& bmml::alteration::operator=(int value) {
   text(boost::lexical_cast<std::string>(value));
   return *this;
 }
-
 
 REGISTER_DEFINITION(alternation, qname("alternation"), content::simple);
 
@@ -335,12 +337,14 @@ bmml::start_stop bmml::alternation_ref::type() const {
 }
 
 void bmml::alternation_ref::type(bmml::start_stop value) {
+  static qname const attr{"type"};
+
   switch (value) {
-  case bmml::start_stop::start:
-    attributes()[qname{"type"}] = "start";
+  case start_stop::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::start_stop::stop:
-    attributes()[qname{"type"}] = "stop";
+  case start_stop::stop:
+    attributes()[attr] = "stop";
     break;
 
   default:
@@ -387,23 +391,25 @@ optional<bmml::left_middle_right> bmml::barline::type() const {
 }
 
 void bmml::barline::type(optional<bmml::left_middle_right> opt_value) {
+  static const qname attr{"type"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::left_middle_right::left:
-      attributes()[qname{"type"}] = "left";
+    case left_middle_right::left:
+      attributes()[attr] = "left";
       break;
-    case bmml::left_middle_right::middle:
-      attributes()[qname{"type"}] = "middle";
+    case left_middle_right::middle:
+      attributes()[attr] = "middle";
       break;
-    case bmml::left_middle_right::right:
-      attributes()[qname{"type"}] = "right";
+    case left_middle_right::right:
+      attributes()[attr] = "right";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"type"});
+    attributes().erase(attr);
   }
 }
 
@@ -459,15 +465,17 @@ bmml::full_half_vertical bmml::barre::value() const {
 }
 
 void bmml::barre::value(bmml::full_half_vertical value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::full_half_vertical::full:
-    attributes()[qname{"value"}] = "full";
+  case full_half_vertical::full:
+    attributes()[attr] = "full";
     break;
-  case bmml::full_half_vertical::half:
-    attributes()[qname{"value"}] = "half";
+  case full_half_vertical::half:
+    attributes()[attr] = "half";
     break;
-  case bmml::full_half_vertical::vertical:
-    attributes()[qname{"value"}] = "vertical";
+  case full_half_vertical::vertical:
+    attributes()[attr] = "vertical";
     break;
 
   default:
@@ -526,12 +534,14 @@ bmml::up_down bmml::bow::value() const {
 }
 
 void bmml::bow::value(bmml::up_down value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::up_down::up:
-    attributes()[qname{"value"}] = "up";
+  case up_down::up:
+    attributes()[attr] = "up";
     break;
-  case bmml::up_down::down:
-    attributes()[qname{"value"}] = "down";
+  case up_down::down:
+    attributes()[attr] = "down";
     break;
 
   default:
@@ -567,15 +577,17 @@ bmml::full_half_caesura bmml::breath::value() const {
 }
 
 void bmml::breath::value(bmml::full_half_caesura value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::full_half_caesura::full:
-    attributes()[qname{"value"}] = "full";
+  case full_half_caesura::full:
+    attributes()[attr] = "full";
     break;
-  case bmml::full_half_caesura::half:
-    attributes()[qname{"value"}] = "half";
+  case full_half_caesura::half:
+    attributes()[attr] = "half";
     break;
-  case bmml::full_half_caesura::caesura:
-    attributes()[qname{"value"}] = "caesura";
+  case full_half_caesura::caesura:
+    attributes()[attr] = "caesura";
     break;
 
   default:
@@ -771,20 +783,22 @@ optional<bmml::above_below> bmml::clef::eight() const {
 }
 
 void bmml::clef::eight(optional<bmml::above_below> opt_value) {
+  static const qname attr{"eight"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::above_below::above:
-      attributes()[qname{"eight"}] = "above";
+    case above_below::above:
+      attributes()[attr] = "above";
       break;
-    case bmml::above_below::below:
-      attributes()[qname{"eight"}] = "below";
+    case above_below::below:
+      attributes()[attr] = "below";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"eight"});
+    attributes().erase(attr);
   }
 }
 
@@ -856,7 +870,6 @@ void bmml::dot::value(std::string const& value) {
 }
 
 REGISTER_DEFINITION(duration, qname("duration"), content::simple);
-
 bmml::duration::operator int() const {
   return boost::lexical_cast<int>(text());
 }
@@ -865,7 +878,6 @@ bmml::duration& bmml::duration::operator=(int value) {
   text(boost::lexical_cast<std::string>(value));
   return *this;
 }
-
 
 REGISTER_DEFINITION(dynamic, qname("dynamic"), content::simple);
 
@@ -1121,20 +1133,22 @@ optional<bmml::up_down> bmml::hand::chord_dir() const {
 }
 
 void bmml::hand::chord_dir(optional<bmml::up_down> opt_value) {
+  static const qname attr{"chord_dir"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::up_down::up:
-      attributes()[qname{"chord_dir"}] = "up";
+    case up_down::up:
+      attributes()[attr] = "up";
       break;
-    case bmml::up_down::down:
-      attributes()[qname{"chord_dir"}] = "down";
+    case up_down::down:
+      attributes()[attr] = "down";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"chord_dir"});
+    attributes().erase(attr);
   }
 }
 
@@ -1152,12 +1166,14 @@ bmml::left_right bmml::hand::value() const {
 }
 
 void bmml::hand::value(bmml::left_right value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::left_right::left:
-    attributes()[qname{"value"}] = "left";
+  case left_right::left:
+    attributes()[attr] = "left";
     break;
-  case bmml::left_right::right:
-    attributes()[qname{"value"}] = "right";
+  case left_right::right:
+    attributes()[attr] = "right";
     break;
 
   default:
@@ -1216,12 +1232,14 @@ bmml::natural_artificial bmml::harmonic::value() const {
 }
 
 void bmml::harmonic::value(bmml::natural_artificial value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::natural_artificial::natural:
-    attributes()[qname{"value"}] = "natural";
+  case natural_artificial::natural:
+    attributes()[attr] = "natural";
     break;
-  case bmml::natural_artificial::artificial:
-    attributes()[qname{"value"}] = "artificial";
+  case natural_artificial::artificial:
+    attributes()[attr] = "artificial";
     break;
 
   default:
@@ -1257,15 +1275,17 @@ bmml::inaccord_t bmml::inaccord::value() const {
 }
 
 void bmml::inaccord::value(bmml::inaccord_t value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::inaccord_t::full:
-    attributes()[qname{"value"}] = "full";
+  case inaccord_t::full:
+    attributes()[attr] = "full";
     break;
-  case bmml::inaccord_t::part:
-    attributes()[qname{"value"}] = "part";
+  case inaccord_t::part:
+    attributes()[attr] = "part";
     break;
-  case bmml::inaccord_t::division:
-    attributes()[qname{"value"}] = "division";
+  case inaccord_t::division:
+    attributes()[attr] = "division";
     break;
 
   default:
@@ -1421,12 +1441,14 @@ bmml::start_stop bmml::line_of_continuation::value() const {
 }
 
 void bmml::line_of_continuation::value(bmml::start_stop value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::start_stop::start:
-    attributes()[qname{"value"}] = "start";
+  case start_stop::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::start_stop::stop:
-    attributes()[qname{"value"}] = "stop";
+  case start_stop::stop:
+    attributes()[attr] = "stop";
     break;
 
   default:
@@ -1638,24 +1660,26 @@ bmml::ambiguous_value bmml::metronome_note_type::value() const {
 }
 
 void bmml::metronome_note_type::value(bmml::ambiguous_value value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::ambiguous_value::eighth_or_128th:
-    attributes()[qname{"value"}] = "8th_or_128th";
+  case ambiguous_value::eighth_or_128th:
+    attributes()[attr] = "8th_or_128th";
     break;
-  case bmml::ambiguous_value::quarter_or_64th:
-    attributes()[qname{"value"}] = "quarter_or_64th";
+  case ambiguous_value::quarter_or_64th:
+    attributes()[attr] = "quarter_or_64th";
     break;
-  case bmml::ambiguous_value::half_or_32nd:
-    attributes()[qname{"value"}] = "half_or_32nd";
+  case ambiguous_value::half_or_32nd:
+    attributes()[attr] = "half_or_32nd";
     break;
-  case bmml::ambiguous_value::whole_or_16th:
-    attributes()[qname{"value"}] = "whole_or_16th";
+  case ambiguous_value::whole_or_16th:
+    attributes()[attr] = "whole_or_16th";
     break;
-  case bmml::ambiguous_value::brevis:
-    attributes()[qname{"value"}] = "brevis";
+  case ambiguous_value::brevis:
+    attributes()[attr] = "brevis";
     break;
-  case bmml::ambiguous_value::longa:
-    attributes()[qname{"value"}] = "longa";
+  case ambiguous_value::longa:
+    attributes()[attr] = "longa";
     break;
 
   default:
@@ -1832,24 +1856,26 @@ bmml::ambiguous_value bmml::note_type::value() const {
 }
 
 void bmml::note_type::value(bmml::ambiguous_value value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::ambiguous_value::eighth_or_128th:
-    attributes()[qname{"value"}] = "8th_or_128th";
+  case ambiguous_value::eighth_or_128th:
+    attributes()[attr] = "8th_or_128th";
     break;
-  case bmml::ambiguous_value::quarter_or_64th:
-    attributes()[qname{"value"}] = "quarter_or_64th";
+  case ambiguous_value::quarter_or_64th:
+    attributes()[attr] = "quarter_or_64th";
     break;
-  case bmml::ambiguous_value::half_or_32nd:
-    attributes()[qname{"value"}] = "half_or_32nd";
+  case ambiguous_value::half_or_32nd:
+    attributes()[attr] = "half_or_32nd";
     break;
-  case bmml::ambiguous_value::whole_or_16th:
-    attributes()[qname{"value"}] = "whole_or_16th";
+  case ambiguous_value::whole_or_16th:
+    attributes()[attr] = "whole_or_16th";
     break;
-  case bmml::ambiguous_value::brevis:
-    attributes()[qname{"value"}] = "brevis";
+  case ambiguous_value::brevis:
+    attributes()[attr] = "brevis";
     break;
-  case bmml::ambiguous_value::longa:
-    attributes()[qname{"value"}] = "longa";
+  case ambiguous_value::longa:
+    attributes()[attr] = "longa";
     break;
 
   default:
@@ -1876,27 +1902,29 @@ bmml::diatonic_step bmml::note_type::name() const {
 }
 
 void bmml::note_type::name(bmml::diatonic_step value) {
+  static qname const attr{"name"};
+
   switch (value) {
-  case bmml::diatonic_step::A:
-    attributes()[qname{"name"}] = "A";
+  case diatonic_step::A:
+    attributes()[attr] = "A";
     break;
-  case bmml::diatonic_step::B:
-    attributes()[qname{"name"}] = "B";
+  case diatonic_step::B:
+    attributes()[attr] = "B";
     break;
-  case bmml::diatonic_step::C:
-    attributes()[qname{"name"}] = "C";
+  case diatonic_step::C:
+    attributes()[attr] = "C";
     break;
-  case bmml::diatonic_step::D:
-    attributes()[qname{"name"}] = "D";
+  case diatonic_step::D:
+    attributes()[attr] = "D";
     break;
-  case bmml::diatonic_step::E:
-    attributes()[qname{"name"}] = "E";
+  case diatonic_step::E:
+    attributes()[attr] = "E";
     break;
-  case bmml::diatonic_step::F:
-    attributes()[qname{"name"}] = "F";
+  case diatonic_step::F:
+    attributes()[attr] = "F";
     break;
-  case bmml::diatonic_step::G:
-    attributes()[qname{"name"}] = "G";
+  case diatonic_step::G:
+    attributes()[attr] = "G";
     break;
 
   default:
@@ -2061,26 +2089,28 @@ optional<bmml::organ_pedal_t> bmml::organ_pedal::substitution() const {
 }
 
 void bmml::organ_pedal::substitution(optional<bmml::organ_pedal_t> opt_value) {
+  static const qname attr{"substitution"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::organ_pedal_t::left_toe:
-      attributes()[qname{"substitution"}] = "left_toe";
+    case organ_pedal_t::left_toe:
+      attributes()[attr] = "left_toe";
       break;
-    case bmml::organ_pedal_t::left_heel:
-      attributes()[qname{"substitution"}] = "left_heel";
+    case organ_pedal_t::left_heel:
+      attributes()[attr] = "left_heel";
       break;
-    case bmml::organ_pedal_t::right_toe:
-      attributes()[qname{"substitution"}] = "right_toe";
+    case organ_pedal_t::right_toe:
+      attributes()[attr] = "right_toe";
       break;
-    case bmml::organ_pedal_t::right_heel:
-      attributes()[qname{"substitution"}] = "right_heel";
+    case organ_pedal_t::right_heel:
+      attributes()[attr] = "right_heel";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"substitution"});
+    attributes().erase(attr);
   }
 }
 
@@ -2100,18 +2130,20 @@ bmml::organ_pedal_t bmml::organ_pedal::value() const {
 }
 
 void bmml::organ_pedal::value(bmml::organ_pedal_t value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::organ_pedal_t::left_toe:
-    attributes()[qname{"value"}] = "left_toe";
+  case organ_pedal_t::left_toe:
+    attributes()[attr] = "left_toe";
     break;
-  case bmml::organ_pedal_t::left_heel:
-    attributes()[qname{"value"}] = "left_heel";
+  case organ_pedal_t::left_heel:
+    attributes()[attr] = "left_heel";
     break;
-  case bmml::organ_pedal_t::right_toe:
-    attributes()[qname{"value"}] = "right_toe";
+  case organ_pedal_t::right_toe:
+    attributes()[attr] = "right_toe";
     break;
-  case bmml::organ_pedal_t::right_heel:
-    attributes()[qname{"value"}] = "right_heel";
+  case organ_pedal_t::right_heel:
+    attributes()[attr] = "right_heel";
     break;
 
   default:
@@ -2131,7 +2163,6 @@ std::string bmml::ornament::id() const {
 void bmml::ornament::id(std::string const& value) {
   attributes()[qname{"id"}] = value;
 }
-
 vector<shared_ptr<bmml::accidental>> bmml::ornament::accidentals() const {
   return find_elements<bmml::accidental>();
 }
@@ -2265,20 +2296,22 @@ optional<bmml::up_down> bmml::part_data::chord_dir() const {
 }
 
 void bmml::part_data::chord_dir(optional<bmml::up_down> opt_value) {
+  static const qname attr{"chord_dir"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::up_down::up:
-      attributes()[qname{"chord_dir"}] = "up";
+    case up_down::up:
+      attributes()[attr] = "up";
       break;
-    case bmml::up_down::down:
-      attributes()[qname{"chord_dir"}] = "down";
+    case up_down::down:
+      attributes()[attr] = "down";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"chord_dir"});
+    attributes().erase(attr);
   }
 }
 
@@ -2322,7 +2355,6 @@ void bmml::pedal::value(std::string const& value) {
 }
 
 REGISTER_DEFINITION(pitch, qname("pitch"), content::simple);
-
 bmml::pitch::operator int() const {
   return boost::lexical_cast<int>(text());
 }
@@ -2331,7 +2363,6 @@ bmml::pitch& bmml::pitch::operator=(int value) {
   text(boost::lexical_cast<std::string>(value));
   return *this;
 }
-
 
 REGISTER_DEFINITION(pizzicato, qname("pizzicato"), content::simple);
 
@@ -2384,12 +2415,14 @@ bmml::left_right bmml::pizzicato::value() const {
 }
 
 void bmml::pizzicato::value(bmml::left_right value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::left_right::left:
-    attributes()[qname{"value"}] = "left";
+  case left_right::left:
+    attributes()[attr] = "left";
     break;
-  case bmml::left_right::right:
-    attributes()[qname{"value"}] = "right";
+  case left_right::right:
+    attributes()[attr] = "right";
     break;
 
   default:
@@ -2424,12 +2457,14 @@ bmml::up_down bmml::rasgueado::value() const {
 }
 
 void bmml::rasgueado::value(bmml::up_down value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::up_down::up:
-    attributes()[qname{"value"}] = "up";
+  case up_down::up:
+    attributes()[attr] = "up";
     break;
-  case bmml::up_down::down:
-    attributes()[qname{"value"}] = "down";
+  case up_down::down:
+    attributes()[attr] = "down";
     break;
 
   default:
@@ -2575,24 +2610,26 @@ bmml::ambiguous_value bmml::rest_type::value() const {
 }
 
 void bmml::rest_type::value(bmml::ambiguous_value value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::ambiguous_value::eighth_or_128th:
-    attributes()[qname{"value"}] = "8th_or_128th";
+  case ambiguous_value::eighth_or_128th:
+    attributes()[attr] = "8th_or_128th";
     break;
-  case bmml::ambiguous_value::quarter_or_64th:
-    attributes()[qname{"value"}] = "quarter_or_64th";
+  case ambiguous_value::quarter_or_64th:
+    attributes()[attr] = "quarter_or_64th";
     break;
-  case bmml::ambiguous_value::half_or_32nd:
-    attributes()[qname{"value"}] = "half_or_32nd";
+  case ambiguous_value::half_or_32nd:
+    attributes()[attr] = "half_or_32nd";
     break;
-  case bmml::ambiguous_value::whole_or_16th:
-    attributes()[qname{"value"}] = "whole_or_16th";
+  case ambiguous_value::whole_or_16th:
+    attributes()[attr] = "whole_or_16th";
     break;
-  case bmml::ambiguous_value::brevis:
-    attributes()[qname{"value"}] = "brevis";
+  case ambiguous_value::brevis:
+    attributes()[attr] = "brevis";
     break;
-  case bmml::ambiguous_value::longa:
-    attributes()[qname{"value"}] = "longa";
+  case ambiguous_value::longa:
+    attributes()[attr] = "longa";
     break;
 
   default:
@@ -2638,7 +2675,6 @@ std::string bmml::score::version() const {
 void bmml::score::version(std::string const& value) {
   attributes()[qname{"version"}] = value;
 }
-
 shared_ptr<bmml::score_header> bmml::score::header() const {
   return find_element<bmml::score_header>();
 }
@@ -2706,15 +2742,17 @@ bmml::glissando_start_stop bmml::shift_line::value() const {
 }
 
 void bmml::shift_line::value(bmml::glissando_start_stop value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::glissando_start_stop::glissando:
-    attributes()[qname{"value"}] = "glissando";
+  case glissando_start_stop::glissando:
+    attributes()[attr] = "glissando";
     break;
-  case bmml::glissando_start_stop::start:
-    attributes()[qname{"value"}] = "start";
+  case glissando_start_stop::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::glissando_start_stop::stop:
-    attributes()[qname{"value"}] = "stop";
+  case glissando_start_stop::stop:
+    attributes()[attr] = "stop";
     break;
 
   default:
@@ -2785,15 +2823,17 @@ bmml::start_stop_continue bmml::slur_ref::type() const {
 }
 
 void bmml::slur_ref::type(bmml::start_stop_continue value) {
+  static qname const attr{"type"};
+
   switch (value) {
-  case bmml::start_stop_continue::start:
-    attributes()[qname{"type"}] = "start";
+  case start_stop_continue::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::start_stop_continue::stop:
-    attributes()[qname{"type"}] = "stop";
+  case start_stop_continue::stop:
+    attributes()[attr] = "stop";
     break;
-  case bmml::start_stop_continue::continue_:
-    attributes()[qname{"type"}] = "continue";
+  case start_stop_continue::continue_:
+    attributes()[attr] = "continue";
     break;
 
   default:
@@ -2928,20 +2968,22 @@ optional<bmml::start_stop> bmml::string_fingering::line_of_continuation() const 
 }
 
 void bmml::string_fingering::line_of_continuation(optional<bmml::start_stop> opt_value) {
+  static const qname attr{"line_of_continuation"};
+
   if (opt_value) {
     switch (*opt_value) {
-    case bmml::start_stop::start:
-      attributes()[qname{"line_of_continuation"}] = "start";
+    case start_stop::start:
+      attributes()[attr] = "start";
       break;
-    case bmml::start_stop::stop:
-      attributes()[qname{"line_of_continuation"}] = "stop";
+    case start_stop::stop:
+      attributes()[attr] = "stop";
       break;
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"line_of_continuation"});
+    attributes().erase(attr);
   }
 }
 
@@ -3031,12 +3073,14 @@ bmml::up_down bmml::stroke::value() const {
 }
 
 void bmml::stroke::value(bmml::up_down value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::up_down::up:
-    attributes()[qname{"value"}] = "up";
+  case up_down::up:
+    attributes()[attr] = "up";
     break;
-  case bmml::up_down::down:
-    attributes()[qname{"value"}] = "down";
+  case up_down::down:
+    attributes()[attr] = "down";
     break;
 
   default:
@@ -3289,12 +3333,14 @@ bmml::start_stop bmml::tie_ref::type() const {
 }
 
 void bmml::tie_ref::type(bmml::start_stop value) {
+  static qname const attr{"type"};
+
   switch (value) {
-  case bmml::start_stop::start:
-    attributes()[qname{"type"}] = "start";
+  case start_stop::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::start_stop::stop:
-    attributes()[qname{"type"}] = "stop";
+  case start_stop::stop:
+    attributes()[attr] = "stop";
     break;
 
   default:
@@ -3513,15 +3559,17 @@ bmml::start_stop_continue bmml::tuplet_ref::type() const {
 }
 
 void bmml::tuplet_ref::type(bmml::start_stop_continue value) {
+  static qname const attr{"type"};
+
   switch (value) {
-  case bmml::start_stop_continue::start:
-    attributes()[qname{"type"}] = "start";
+  case start_stop_continue::start:
+    attributes()[attr] = "start";
     break;
-  case bmml::start_stop_continue::stop:
-    attributes()[qname{"type"}] = "stop";
+  case start_stop_continue::stop:
+    attributes()[attr] = "stop";
     break;
-  case bmml::start_stop_continue::continue_:
-    attributes()[qname{"type"}] = "continue";
+  case start_stop_continue::continue_:
+    attributes()[attr] = "continue";
     break;
 
   default:
@@ -3584,21 +3632,24 @@ bmml::value_prefix_t bmml::value_prefix::value() const {
 }
 
 void bmml::value_prefix::value(bmml::value_prefix_t value) {
+  static qname const attr{"value"};
+
   switch (value) {
-  case bmml::value_prefix_t::separator:
-    attributes()[qname{"value"}] = "separator";
+  case value_prefix_t::separator:
+    attributes()[attr] = "separator";
     break;
-  case bmml::value_prefix_t::large:
-    attributes()[qname{"value"}] = "large";
+  case value_prefix_t::large:
+    attributes()[attr] = "large";
     break;
-  case bmml::value_prefix_t::small:
-    attributes()[qname{"value"}] = "small";
+  case value_prefix_t::small:
+    attributes()[attr] = "small";
     break;
-  case bmml::value_prefix_t::twohundredfiftysixth:
-    attributes()[qname{"value"}] = "256th";
+  case value_prefix_t::twohundredfiftysixth:
+    attributes()[attr] = "256th";
     break;
 
   default:
     throw illegal_enumeration{};
   }
 }
+

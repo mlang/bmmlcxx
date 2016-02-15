@@ -314,7 +314,6 @@ public:
 
   operator int() const;
   alteration& operator=(int);
-
 };
 
 class alternation : public dom::element {
@@ -545,7 +544,6 @@ public:
 
   operator int() const;
   duration& operator=(int);
-
 };
 
 class dynamic : public dom::element {
@@ -1227,7 +1225,6 @@ public:
 
   operator int() const;
   pitch& operator=(int);
-
 };
 
 class pizzicato : public dom::element {

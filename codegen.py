@@ -221,22 +221,131 @@ operator<<(std::ostream &os, std::shared_ptr<T> e) {
 #endif
 """
 
-REQUIRED_STRING_ATTRIBUTE_DEFINITION = """
-std::string bmml::{{class}}::{{method}}() const {
-  auto iter = attributes().find(qname{"{{attribute}}"});
+LIBRARY_IMPLEMENTATION = """
+#include "bmml.hxx"
+
+#include <iostream>
+#include <xml/parser>
+#include <xml/serializer>
+
+#include <boost/lexical_cast.hpp>
+
+using namespace std;
+using namespace xml;
+using bmml::optional;
+
+bmml::dom::factory::map_type *bmml::dom::factory::default_map{};
+
+namespace {
+
+bool whitespace (const string& s) {
+  for (char c : s) {
+    if (c != 0x20 && c != 0x0A && c != 0x0D && c != 0x09) return false;
+  }
+
+  return true;
+}
+
+} // namespace
+
+bmml::dom::element::element(parser& p, bool start_end) {
+  parse(p, start_end);
+}
+
+void bmml::dom::element::parse(parser& p, bool start_end) {
+  if (start_end) p.next_expect(parser::start_element);
+
+  tag_name_ = p.qname();
+  for (auto &&a : p.attribute_map()) attributes_[a.first] = a.second.value;
+
+  // Parse content (nested elements or text).
+  //
+  while (p.peek () != parser::end_element) {
+    switch (p.next()) {
+    case parser::start_element: {
+      if (!text_.empty()) {
+        if (!whitespace(text_)) throw parsing(p, "element in simple content");
+
+        text_.clear();
+      }
+
+      elements_.push_back(dom::factory::make(p));
+      p.next_expect(parser::end_element, elements_.back()->tag_name());
+
+      break;
+    }
+    case parser::characters: {
+      if (!elements_.empty ()) {
+        if (!whitespace (p.value ()))
+          throw parsing (p, "characters in complex content");
+
+        break; // Ignore whitespaces.
+      }
+
+      text_ += p.value ();
+      break;
+    }
+    default:
+      break; // Ignore any other events.
+    }
+  }
+
+  if (start_end) p.next_expect(parser::end_element, tag_name_);
+}
+
+void bmml::dom::element::serialize(serializer& s, bool start_end) const {
+  if (start_end) s.start_element(tag_name_);
+  for (auto &&a : attributes_) s.attribute (a.first, a.second);
+
+  // Serialize content (nested elements or text).
+  //
+  if (!elements_.empty ()) {
+    for (auto &&e : elements_) e->serialize(s);
+  } else if (!text_.empty()) s.characters(text_);
+
+  if (start_end) s.end_element ();
+}
+
+{% for elem in dtd.iterelements() %}
+REGISTER_DEFINITION({{elem.name}}, qname("{{elem.name}}"), content::{{content_type.get(elem.type, elem.type)}});
+
+  {%- for attr in elem.iterattributes() %}
+    {%- if attr is required_string_attribute %}
+
+std::string bmml::{{elem.name}}::{{attr.name}}() const {
+  auto iter = attributes().find(qname{"{{attr.name}}"});
   if (iter != attributes().end()) return iter->second;
 
   throw missing_attribute{};
 }
 
-void bmml::{{class}}::{{method}}(std::string const& value) {
-  attributes()[qname{"{{attribute}}"}] = value;
+void bmml::{{elem.name}}::{{attr.name}}(std::string const& value) {
+  attributes()[qname{"{{attr.name}}"}] = value;
 }
-"""
+    {%- elif attr is implied_string_attribute %}
 
-IMPLIED_BOOL_ATTRIBUTE_DEFINITION = """
-optional<bool> bmml::{{class}}::{{method}}() const {
-  static const qname attr{"{{attribute}}"};
+optional<std::string> bmml::{{elem.name}}::{{attr.name}}() const {
+  static const qname attr{"{{attr.name}}"};
+
+  auto iter = attributes().find(attr);
+  if (iter != attributes().end()) return {iter->second};
+
+  return {};
+}
+
+void bmml::{{elem.name}}::{{attr.name}}(optional<std::string> opt_value) {
+  static const qname attr{"{{attr.name}}"};
+
+  if (opt_value) {
+    attributes()[attr] = *opt_value;
+  } else {
+    attributes().erase(attr);
+  }
+}
+    {%- elif attr is boolean_enumeration_attribute and attr.default == 'implied' %}
+
+optional<bool> bmml::{{elem.name}}::{{attr.name}}() const {
+  static const qname attr{"{{attr.name}}"};
 
   auto iter = attributes().find(attr);
   if (iter != attributes().end()) {
@@ -249,8 +358,8 @@ optional<bool> bmml::{{class}}::{{method}}() const {
   return {};
 }
 
-void bmml::{{class}}::{{method}}(optional<bool> opt_value) {
-  static const qname attr{"{{attribute}}"};
+void bmml::{{elem.name}}::{{attr.name}}(optional<bool> opt_value) {
+  static const qname attr{"{{attr.name}}"};
 
   if (opt_value) {
     attributes()[attr] = *opt_value ? "true" : "false";
@@ -258,17 +367,18 @@ void bmml::{{class}}::{{method}}(optional<bool> opt_value) {
     attributes().erase(attr);
   }
 }
-"""
+    {%- elif attr is known_enumeration_attribute %}
+      {%- set enum = enumerations[tuple(attr.values())]['name'] %}
+      {%- if attr.default == 'required' %}
 
-REQUIRED_ENUMERATION_ATTRIBUTE_DEFINITION = """
-bmml::{{enum}} bmml::{{class}}::{{method}}() const {
-  auto iter = attributes().find(qname{"{{attribute}}"});
+bmml::{{enum}} bmml::{{elem.name}}::{{attr.name}}() const {
+  auto iter = attributes().find(qname{"{{attr.name}}"});
 
   if (iter != attributes().end()) {
-{%- for value in values %}
+        {%- for value in attr.values() %}
     {% if not loop.first %}else {% else %}     {% endif -%}
     if (iter->second == "{{value}}") return {{enum}}::{{value | mangle}};
-{%- endfor %}
+        {%- endfor %}
 
     throw illegal_enumeration{};
   }
@@ -276,77 +386,67 @@ bmml::{{enum}} bmml::{{class}}::{{method}}() const {
   throw missing_attribute{};
 }
 
-void bmml::{{class}}::{{method}}(bmml::{{enum}} value) {
+void bmml::{{elem.name}}::{{attr.name}}(bmml::{{enum}} value) {
+  static qname const attr{"{{attr.name}}"};
+
   switch (value) {
-{%- for value in values %}
-  case bmml::{{enum}}::{{value | mangle}}:
-    attributes()[qname{"{{attribute}}"}] = "{{value}}";
+        {%- for value in attr.values() %}
+  case {{enum}}::{{value | mangle}}:
+    attributes()[attr] = "{{value}}";
     break;
-{%- endfor %}
+        {%- endfor %}
 
   default:
     throw illegal_enumeration{};
   }
 }
-"""
 
-IMPLIED_ENUMERATION_ATTRIBUTE_DEFINITION = """
-optional<bmml::{{enum}}> bmml::{{class}}::{{method}}() const {
-  auto iter = attributes().find(qname{"{{attribute}}"});
+      {%- elif attr.default == 'implied' %}
+
+optional<bmml::{{enum}}> bmml::{{elem.name}}::{{attr.name}}() const {
+  auto iter = attributes().find(qname{"{{attr.name}}"});
 
   if (iter != attributes().end()) {
-{%- for value in values %}
+        {%- for value in attr.values() %}
     {% if not loop.first %}else {% else %}     {% endif -%}
     if (iter->second == "{{value}}") return { {{enum}}::{{value | mangle}} };
-{%- endfor %}
+        {%- endfor %}
   }
 
   return {};
 }
 
-void bmml::{{class}}::{{method}}(optional<bmml::{{enum}}> opt_value) {
+void bmml::{{elem.name}}::{{attr.name}}(optional<bmml::{{enum}}> opt_value) {
+  static const qname attr{"{{attr.name}}"};
+
   if (opt_value) {
     switch (*opt_value) {
-{%- for value in values %}
-    case bmml::{{enum}}::{{value | mangle}}:
-      attributes()[qname{"{{attribute}}"}] = "{{value}}";
+        {%- for value in attr.values() %}
+    case {{enum}}::{{value | mangle}}:
+      attributes()[attr] = "{{value}}";
       break;
-{%- endfor %}
+        {%- endfor %}
 
     default:
       throw illegal_enumeration{};
     }
   } else {
-    attributes().erase(qname{"{{attribute}}"});
-  }
-}
-"""
-
-IMPLIED_STRING_ATTRIBUTE_DEFINITION = """
-optional<std::string> bmml::{{class}}::{{method}}() const {
-  static const qname attr{"{{attribute}}"};
-
-  auto iter = attributes().find(attr);
-  if (iter != attributes().end()) return {iter->second};
-
-  return {};
-}
-
-void bmml::{{class}}::{{method}}(optional<std::string> opt_value) {
-  static const qname attr{"{{attribute}}"};
-
-  if (opt_value) {
-    attributes()[attr] = *opt_value;
-  } else {
     attributes().erase(attr);
   }
 }
+
+      {%- endif %}
+    {%- endif %}
+  {%- endfor %}
+  {%- if elem.name in extra_methods -%}
+    {{ extra_methods[elem.name]['definition'] }}
+  {%- endif %}
+{% endfor %}
 """
 
 PCDATA_OPERATOR_DECLARATION = """
   operator {{type}}() const;
   {{class}}& operator=({{type}});
-
 """
 
 PCDATA_OPERATOR_DEFINITION = """
@@ -358,7 +458,6 @@ bmml::{{class}}& bmml::{{class}}::operator=({{type}} value) {
   text(boost::lexical_cast<std::string>(value));
   return *this;
 }
-
 """
 
 REGISTER_DEFINITION = """
@@ -439,52 +538,11 @@ shared_ptr<bmml::score_data> bmml::score::data() const {
 
 for element in ['alteration', 'duration', 'pitch']:
   methods[element] = {
-    'declaration': template('PCDATA_OPERATOR_DECLARATION').render({'class': element,
-                                                                   'type': 'int'}),
-    'definition': template('PCDATA_OPERATOR_DEFINITION').render({'class': element,
-                                                                 'type': 'int'})
+    'declaration': template('PCDATA_OPERATOR_DECLARATION').render(
+      {'class': element, 'type': 'int'}),
+    'definition': template('PCDATA_OPERATOR_DEFINITION').render(
+      {'class': element, 'type': 'int'})
   }
-
-def required_enumeration_definition(class_name, method_name, values):
-  if values in enumerations:
-    enum_name = enumerations[values]['name']
-    print(template('REQUIRED_ENUMERATION_ATTRIBUTE_DEFINITION').render(
-      {'class': class_name, 'method': method_name, 'attribute': method_name,
-       'enum': enum_name, 'values': values}))
-
-def implied_enumeration_definition(class_name, method_name, values):
-  if values in enumerations:
-    enum_name = enumerations[values]['name']
-    print(template('IMPLIED_ENUMERATION_ATTRIBUTE_DEFINITION').render(
-      {'class': class_name, 'method': method_name, 'attribute': method_name,
-       'enum': enum_name, 'values': values}))
-
-def cpp():
-  for e in bmml.iterelements():
-    type = e.type
-    if type == 'mixed':
-      type = 'simple'
-    if type == 'element':
-      type = 'complex'
-    if type == 'any':
-      type = 'mixed'
-
-    print(template('REGISTER_DEFINITION').render({'class': e.name,
-                                                  'tag_name': e.name,
-                                                  'content_type': type}))
-    for a in e.iterattributes():
-      if (a.type == 'id' or a.type == 'cdata' or a.type == 'idref') and a.default == 'required':
-        print(template('REQUIRED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
-      elif a.type == 'cdata' and a.default == 'implied':
-        print(template('IMPLIED_STRING_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
-      elif a.type == 'enumeration' and a.default == 'implied' and a.values() == ['true', 'false']:
-        print(template('IMPLIED_BOOL_ATTRIBUTE_DEFINITION').render({'class': e.name, 'method': a.name, 'attribute': a.name}))
-      elif a.type == 'enumeration' and a.default == 'required':
-        required_enumeration_definition(e.name, a.name, tuple(a.values()))
-      elif a.type == 'enumeration' and a.default == 'implied':
-        implied_enumeration_definition(e.name, a.name, tuple(a.values()))
-    if e.name in methods:
-      print(methods[e.name]['definition'])
 
 def hpp():
   print(template('LIBRARY_HEADER').render(
@@ -497,10 +555,63 @@ def hpp():
                       'score': ['score_data', 'score_header']}
     }))
 
+def cpp():
+  print(template('LIBRARY_IMPLEMENTATION').render(
+    {'dtd': bmml,
+     'enumerations': enumerations,
+     'extra_methods': methods,
+     'enum_classes': sorted([(v['name'], k) for k, v in enumerations.items()
+                             if not v in [e.name for e in bmml.iterelements()]]),
+     'content_type': {'mixed': 'simple', 'element': 'complex', 'any': 'mixed'}
+    }))
+
 def list():
   for e in bmml.iterelements():
     print(e.name, e.type)
     for a in e.iterattributes():
       print("  ", a.name, a.type, a.default, a.default_value)
 
+def enums():
+  for e in bmml.iterelements():
+    for a in e.iterattributes():
+      if a.values() != ['true', 'false']:
+        if a.type == 'enumeration' and not tuple(a.values()) in enumerations:
+          print(e.name, a.name, a.type, a.default, a.values())
 
+
+def bool_enums():
+  for e in bmml.iterelements():
+    for a in e.iterattributes():
+      if a.type == 'enumeration' and a.values() == ['true','false']:
+        print(e.name, a.name, a.type, a.default, a.values())
+
+def vlist(content):
+  if content.type == 'element':
+    return [content.name]
+  elif content.type == 'seq' or content.type == 'or':
+    return vlist(content.left) + vlist(content.right)
+
+class FoundOr(Exception):
+  pass
+
+def seq_only1(content):
+  if content.type == 'element':
+    return [(content.name, content.occur)]
+  elif content.type == 'seq':
+    return seq_only1(content.left) + seq_only1(content.right)
+  else:
+    raise FoundOr()
+
+def seq_only(content):
+  try:
+    return seq_only1(content)
+  except FoundOr as e:
+    return None
+
+
+def variants():
+  for e in bmml.iterelements():
+    if e.content != None and e.content.type != 'pcdata':
+      seq = seq_only(e.content)
+      if seq != None and len(seq)==len(set(seq)):
+        print(e.name, seq_only(e.content))
