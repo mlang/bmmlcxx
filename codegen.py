@@ -307,7 +307,7 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
 }
 
 {% for elem in dtd.iterelements() %}
-REGISTER_DEFINITION({{elem.name}}, qname("{{elem.name}}"), content::{{content_type.get(elem.type, elem.type)}});
+REGISTER_DEFINITION({{elem.name}}, qname("{{elem.name}}"), content::{{elem | content_type}});
 
   {%- for attr in elem.iterattributes() %}
     {%- if attr is required_string_attribute %}
@@ -491,6 +491,8 @@ def mangle(name):
           'continue': 'continue_'}.get(name, name)
 
 templates.filters['mangle'] = mangle
+templates.filters['content_type'] = lambda e: \
+  {'mixed': 'simple', 'element': 'complex', 'any': 'mixed'}.get(e.type, e.type)
 templates.globals['tuple'] = tuple
 templates.tests['required_string_attribute'] = lambda a: \
   a.type in ['id', 'cdata', 'idref'] and a.default == 'required'
@@ -544,13 +546,15 @@ for element in ['alteration', 'duration', 'pitch']:
       {'class': element, 'type': 'int'})
   }
 
+enum_classes = sorted([(v['name'], k) for k, v in enumerations.items()
+                       if not v in [e.name for e in bmml.iterelements()]])
+
 def hpp():
   print(template('LIBRARY_HEADER').render(
     {'dtd': bmml,
      'enumerations': enumerations,
      'extra_methods': methods,
-     'enum_classes': sorted([(v['name'], k) for k, v in enumerations.items()
-                             if not v in [e.name for e in bmml.iterelements()]]),
+     'enum_classes': enum_classes,
      'forwards_for': {'ornament': ['ornament_type'],
                       'score': ['score_data', 'score_header']}
     }))
@@ -560,9 +564,7 @@ def cpp():
     {'dtd': bmml,
      'enumerations': enumerations,
      'extra_methods': methods,
-     'enum_classes': sorted([(v['name'], k) for k, v in enumerations.items()
-                             if not v in [e.name for e in bmml.iterelements()]]),
-     'content_type': {'mixed': 'simple', 'element': 'complex', 'any': 'mixed'}
+     'enum_classes': enum_classes
     }))
 
 def list():
