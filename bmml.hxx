@@ -1838,16 +1838,16 @@ public:
 
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
-operator<<(std::ostream &os, std::shared_ptr<T> e) {
-  if (!std::dynamic_pointer_cast<note_data>(e) &&
-      !std::dynamic_pointer_cast<rest_data>(e) &&
-      !std::dynamic_pointer_cast<score_header>(e))
+operator<<(std::ostream &out, std::shared_ptr<T> elem) {
+  if (!std::dynamic_pointer_cast<note_data>(elem) &&
+      !std::dynamic_pointer_cast<rest_data>(elem) &&
+      !std::dynamic_pointer_cast<score_header>(elem))
   {
-    auto const& text = e->text();
-    if (text.empty()) for (auto c : *e) os << c; else os << text;
+    auto const& text = elem->text();
+    if (text.empty()) for (auto child : *elem) out << child; else out << text;
   }
 
-  return os;
+  return out;
 }
 
 } // namespace bmml

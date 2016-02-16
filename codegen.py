@@ -2,9 +2,6 @@
 # $ python3 -c "from codegen import *; cpp()"
 
 from jinja2 import DictLoader, Environment
-from lxml.etree import DTD
-
-bmml = DTD('bmml.dtd')
 
 LIBRARY_HEADER = """
 #ifndef BMML_HXX
@@ -176,14 +173,17 @@ public:
 
   std::string {{attr.name}}() const;
   void {{attr.name}}(std::string const&);
+
     {%- elif attr is implied_string_attribute %}
 
   optional<std::string> {{attr.name}}() const;
   void {{attr.name}}(optional<std::string>);
+
     {%- elif attr is boolean_enumeration_attribute and attr.default == 'implied' %}
 
   optional<bool> {{attr.name}}() const;
   void {{attr.name}}(optional<bool>);
+
     {%- elif attr is known_enumeration_attribute %}
       {%- set type = enumerations[tuple(attr.values())]['name'] %}
       {%- if attr.default == 'implied' %}
@@ -192,6 +192,7 @@ public:
 
   {{type}} {{attr.name}}() const;
   void {{attr.name}}({{type}});
+
     {%- endif %}
   {%- endfor %}
   {%- if elem.name in extra_methods %}
@@ -204,16 +205,16 @@ public:
 
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
-operator<<(std::ostream &os, std::shared_ptr<T> e) {
-  if (!std::dynamic_pointer_cast<note_data>(e) &&
-      !std::dynamic_pointer_cast<rest_data>(e) &&
-      !std::dynamic_pointer_cast<score_header>(e))
+operator<<(std::ostream &out, std::shared_ptr<T> elem) {
+  if (!std::dynamic_pointer_cast<note_data>(elem) &&
+      !std::dynamic_pointer_cast<rest_data>(elem) &&
+      !std::dynamic_pointer_cast<score_header>(elem))
   {
-    auto const& text = e->text();
-    if (text.empty()) for (auto c : *e) os << c; else os << text;
+    auto const& text = elem->text();
+    if (text.empty()) for (auto child : *elem) out << child; else out << text;
   }
 
-  return os;
+  return out;
 }
 
 } // namespace bmml
@@ -322,6 +323,7 @@ std::string bmml::{{elem.name}}::{{attr.name}}() const {
 void bmml::{{elem.name}}::{{attr.name}}(std::string const& value) {
   attributes()[qname{"{{attr.name}}"}] = value;
 }
+
     {%- elif attr is implied_string_attribute %}
 
 optional<std::string> bmml::{{elem.name}}::{{attr.name}}() const {
@@ -342,6 +344,7 @@ void bmml::{{elem.name}}::{{attr.name}}(optional<std::string> opt_value) {
     attributes().erase(attr);
   }
 }
+
     {%- elif attr is boolean_enumeration_attribute and attr.default == 'implied' %}
 
 optional<bool> bmml::{{elem.name}}::{{attr.name}}() const {
@@ -367,6 +370,7 @@ void bmml::{{elem.name}}::{{attr.name}}(optional<bool> opt_value) {
     attributes().erase(attr);
   }
 }
+
     {%- elif attr is known_enumeration_attribute %}
       {%- set enum = enumerations[tuple(attr.values())]['name'] %}
       {%- if attr.default == 'required' %}
@@ -466,33 +470,50 @@ REGISTER_DEFINITION({{class}}, qname("{{tag_name}}"), content::{{content_type}})
 
 templates = Environment(loader=DictLoader(globals()))
 
+from lxml.etree import DTD
+
+bmml = DTD('bmml.dtd')
+
 enumerations = {
-('full', 'part', 'division'): {'name': 'inaccord_t'},
-('left_toe', 'left_heel', 'right_toe', 'right_heel'): {'name': 'organ_pedal_t'},
-('full', 'half', 'caesura'): {'name': 'full_half_caesura'},
-('full', 'half', 'vertical'): {'name': 'full_half_vertical'},
-('glissando', 'start', 'stop'): {'name': 'glissando_start_stop'},
-('natural', 'artificial'): {'name': 'natural_artificial'},
-('up', 'down'): {'name': 'up_down'},
-('above', 'below'): {'name': 'above_below'},
-('8th_or_128th', 'quarter_or_64th', 'half_or_32nd', 'whole_or_16th',
- 'brevis', 'longa'): {'name': 'ambiguous_value'},
-('A', 'B', 'C', 'D', 'E', 'F', 'G'): {'name': 'diatonic_step'},
-('start', 'stop'): {'name': 'start_stop'},
-('start', 'stop', 'continue'): {'name': 'start_stop_continue'},
-('left', 'right'): {'name': 'left_right'},
-('left', 'middle', 'right'): {'name': 'left_middle_right'},
-('separator', 'large', 'small', '256th'): {'name': 'value_prefix_t'}
+  ('full', 'part', 'division'):
+  {'name': 'inaccord_t'},
+  ('left_toe', 'left_heel', 'right_toe', 'right_heel'):
+  {'name': 'organ_pedal_t'},
+  ('full', 'half', 'caesura'):
+  {'name': 'full_half_caesura'},
+  ('full', 'half', 'vertical'):
+  {'name': 'full_half_vertical'},
+  ('glissando', 'start', 'stop'):
+  {'name': 'glissando_start_stop'},
+  ('natural', 'artificial'):
+  {'name': 'natural_artificial'},
+  ('up', 'down'):
+  {'name': 'up_down'},
+  ('above', 'below'):
+  {'name': 'above_below'},
+  ('8th_or_128th', 'quarter_or_64th', 'half_or_32nd', 'whole_or_16th',
+   'brevis', 'longa'):
+  {'name': 'ambiguous_value'},
+  ('A', 'B', 'C', 'D', 'E', 'F', 'G'):
+  {'name': 'diatonic_step'},
+  ('start', 'stop'):
+  {'name': 'start_stop'},
+  ('start', 'stop', 'continue'):
+  {'name': 'start_stop_continue'},
+  ('left', 'right'):
+  {'name': 'left_right'},
+  ('left', 'middle', 'right'):
+  {'name': 'left_middle_right'},
+  ('separator', 'large', 'small', '256th'):
+  {'name': 'value_prefix_t'}
 }
 
-def mangle(name):
-  return {'8th_or_128th': 'eighth_or_128th',
-          '256th': 'twohundredfiftysixth',
-          'continue': 'continue_'}.get(name, name)
-
-templates.filters['mangle'] = mangle
 templates.filters['content_type'] = lambda e: \
   {'mixed': 'simple', 'element': 'complex', 'any': 'mixed'}.get(e.type, e.type)
+templates.filters['mangle'] = lambda ident: \
+  {'8th_or_128th': 'eighth_or_128th',
+   '256th': 'twohundredfiftysixth',
+   'continue': 'continue_'}.get(ident, ident)
 templates.globals['tuple'] = tuple
 templates.tests['required_string_attribute'] = lambda a: \
   a.type in ['id', 'cdata', 'idref'] and a.default == 'required'
