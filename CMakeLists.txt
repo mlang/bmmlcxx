@@ -21,7 +21,8 @@ target_include_directories(bmmlcxx PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(bmmlcxx studxml)
 
 add_executable(driver driver.cxx)
-target_compile_features(driver PRIVATE cxx_auto_type)
 target_link_libraries(driver bmmlcxx)
 
+add_executable(catbmml catbmml.cxx)
+target_link_libraries(catbmml bmmlcxx)
 

@@ -83,6 +83,28 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
   if (start_end) s.end_element ();
 }
 
+shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
+  auto name = p.qname();
+  auto iter = get_map()->find(name);
+  if (iter == get_map()->end()) {
+    return std::make_shared<element>(p, false);
+  }
+
+  auto content = std::get<1>(iter->second);
+
+  // WORKAROUND: Some BMML documents in the wild are not conforming to BMML 0.8
+  // insofar as they have a barline element with simple content (no barline_type
+  // subelement).  This trips up the parser since according to the DTD,
+  // barline should be of complex type.
+  if (name == xml::qname("barline") &&
+      p.attribute_map().find(xml::qname{"value"}) != p.attribute_map().end()) {
+    content = xml::content::simple;
+  }
+
+  p.content(content);
+  return std::get<0>(iter->second)(p);
+}
+
 
 REGISTER_DEFINITION(abbr_name, qname("abbr_name"), content::simple);
 

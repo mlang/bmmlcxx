@@ -62,7 +62,9 @@ public:
   template<typename T> std::vector<std::shared_ptr<T>> find_elements() const {
     std::vector<std::shared_ptr<T>> result;
     for (auto &&e : elements_)
-      if (auto t = std::dynamic_pointer_cast<T>(e)) result.push_back(t);
+      if (auto t = std::dynamic_pointer_cast<T>(e))
+        result.push_back(std::move(t));
+
     return result;
   }
 
@@ -92,15 +94,7 @@ struct factory {
              std::tuple<std::shared_ptr<element>(*)(xml::parser&),
                         xml::content>>;
 
-  static std::shared_ptr<element> make(xml::parser& p) {
-    auto name = p.qname();
-    auto iter = get_map()->find(name);
-    if (iter == get_map()->end()) {
-      return std::make_shared<element>(p, false);
-    }
-    p.content(std::get<1>(iter->second));
-    return std::get<0>(iter->second)(p);
-  }
+  static std::shared_ptr<element> make(xml::parser& p);
 
 protected:
   static map_type *get_map() {
