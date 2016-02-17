@@ -15,3 +15,10 @@ easier for the programmer to perform common BMML tasks.
 
 See driver.cxx for a simple example on how to use the library.
 
+BMML Files
+----------
+
+A number of BMML documents can be downloaded from the `Contrpunctus BMML library`_.
+
+.. _`Contrpunctus BMML library`: http://www.contrapunctus.it/library
+
