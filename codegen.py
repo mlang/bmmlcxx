@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # $ python3 -c "from codegen import *; hpp()"
 # $ python3 -c "from codegen import *; cpp()"
 
@@ -480,10 +481,6 @@ bmml::{{class}}& bmml::{{class}}::operator=({{type}} value) {
 }
 """
 
-REGISTER_DEFINITION = """
-REGISTER_DEFINITION({{class}}, qname("{{tag_name}}"), content::{{content_type}});
-"""
-
 templates = Environment(loader=DictLoader(globals()))
 
 from lxml.etree import DTD
@@ -603,26 +600,6 @@ def cpp():
      'extra_methods': methods,
      'enum_classes': enum_classes
     }))
-
-def list():
-  for e in bmml.iterelements():
-    print(e.name, e.type)
-    for a in e.iterattributes():
-      print("  ", a.name, a.type, a.default, a.default_value)
-
-def enums():
-  for e in bmml.iterelements():
-    for a in e.iterattributes():
-      if a.values() != ['true', 'false']:
-        if a.type == 'enumeration' and not tuple(a.values()) in enumerations:
-          print(e.name, a.name, a.type, a.default, a.values())
-
-
-def bool_enums():
-  for e in bmml.iterelements():
-    for a in e.iterattributes():
-      if a.type == 'enumeration' and a.values() == ['true','false']:
-        print(e.name, a.name, a.type, a.default, a.values())
 
 def vlist(content):
   if content.type == 'element':
