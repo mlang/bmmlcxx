@@ -94,29 +94,32 @@ private:
   elements_type elements_;     // Complex content only.
 };
 
-struct factory {
-  using map_type =
-    std::map<xml::qname,
-             std::tuple<std::shared_ptr<element>(*)(xml::parser&),
-                        xml::content>>;
-
+class factory {
+public:
   static std::shared_ptr<element> make(xml::parser& p);
 
 protected:
-  static map_type *get_map() {
-    if (!default_map) default_map = new map_type;
+  struct element_info {
+    xml::content content_type;
+    std::shared_ptr<element> (*construct)(xml::parser&);
+  };
 
-    return default_map;
+  using map_type = std::map<xml::qname, element_info>;
+
+  static map_type *get_map() {
+    if (!map) map = new map_type;
+
+    return map;
   }
 
 private:
-  static map_type *default_map;
+  static map_type *map;
 };
 
 template<typename T>
 struct register_element : factory {
   register_element(xml::qname const& name, xml::content const& content) {
-    get_map()->insert({name, std::make_tuple(&element::create<T>, content)});
+    get_map()->insert({name, element_info{content, &element::create<T>}});
   }
 };
 
@@ -230,7 +233,7 @@ using namespace std;
 using namespace xml;
 using bmml::optional;
 
-bmml::dom::factory::map_type *bmml::dom::factory::default_map{};
+bmml::dom::factory::map_type *bmml::dom::factory::map{};
 
 namespace {
 
@@ -309,7 +312,7 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
     return std::make_shared<element>(p, false);
   }
 
-  auto content = std::get<1>(iter->second);
+  auto content = iter->second.content_type;
 
   // WORKAROUND: Some BMML documents in the wild are not conforming to BMML 0.8
   // insofar as they have a barline element with simple content (no barline_type
@@ -321,7 +324,7 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
   }
 
   p.content(content);
-  return std::get<0>(iter->second)(p);
+  return iter->second.construct(p);
 }
 
 {% for elem in dtd.iterelements() %}
