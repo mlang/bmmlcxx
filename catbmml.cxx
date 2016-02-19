@@ -23,7 +23,7 @@ int main (int argc, char *argv[]) {
         parser p{ifs, argv[i]};
 
         p.next_expect(parser::start_element, "score", content::complex);
-        cout << make_shared<bmml::score>(p, false);
+        cout << make_shared<bmml::score>(p, false) << endl;
         p.next_expect(parser::end_element, "score");
       } else {
         cerr << "Unable to open '" << argv[i] << "'." << endl;
