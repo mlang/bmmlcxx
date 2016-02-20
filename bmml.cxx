@@ -26,10 +26,6 @@ bool whitespace (const string& s) {
 } // namespace
 
 bmml::dom::element::element(parser& p, bool start_end) {
-  parse(p, start_end);
-}
-
-void bmml::dom::element::parse(parser& p, bool start_end) {
   if (start_end) p.next_expect(parser::start_element);
 
   tag_name_ = p.qname();
@@ -103,7 +99,7 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
   }
 
   p.content(content);
-  return element.construct(p);
+  return element.create(p);
 }
 
 

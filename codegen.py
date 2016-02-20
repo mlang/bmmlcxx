@@ -33,32 +33,38 @@ public:
   using attributes_type = std::map<xml::qname, std::string>;
   using elements_type = std::vector<std::shared_ptr<element>>;
 
-  template<typename T> static std::shared_ptr<element> create(xml::parser& p) {
-    return std::make_shared<T>(p, false);
-  }
-  
   element(const xml::qname& name) : tag_name_(name) {}
-  element(const xml::qname& name, std::string const& text)
-  : tag_name_(name), text_(text) {}
   virtual ~element() = default;
 
-  const xml::qname& tag_name() const { return tag_name_; }
-  const attributes_type& attributes () const {return attributes_;}
+  xml::qname const& tag_name() const { return tag_name_; }
 
-  attributes_type& attributes () { return attributes_; }
+  attributes_type const& attributes() const { return attributes_; }
+  attributes_type&       attributes()       { return attributes_; }
 
-  const std::string& text () const {return text_;}
+  std::string const& text() const { return text_; }
 
-  void text (const std::string& text) {text_ = text;}
+  void text(std::string const& text) { text_ = text; }
 
-  const elements_type& elements () const {return elements_;}
-  elements_type& elements () {return elements_;}
+  elements_type const& elements() const {return elements_;}
+  elements_type&       elements()       { return elements_; }
 
   elements_type::const_iterator begin() const { return elements_.begin(); }
   elements_type::const_iterator end() const { return elements_.end(); }
   elements_type::iterator begin() { return elements_.begin(); }
   elements_type::iterator end() { return elements_.end(); }
 
+  // Parse an element. If start_end is false, then don't parse the
+  // start and end of the element.
+  //
+  element (xml::parser&, bool start_end = true);
+
+  // Serialize an element. If start_end is false, then don't serialize
+  // the start and end of the element.
+  //
+  void serialize (xml::serializer&, bool start_end = true) const;
+
+  // Utilities
+  //
   template<typename T> std::shared_ptr<T> find_element() const {
     for (auto &&e : elements_)
       if (auto t = std::dynamic_pointer_cast<T>(e)) return t;
@@ -74,18 +80,9 @@ public:
     return result;
   }
 
-  // Parse an element. If start_end is false, then don't parse the
-  // start and end of the element.
-  //
-  element (xml::parser&, bool start_end = true);
-
-  // Serialize an element. If start_end is false, then don't serialize
-  // the start and end of the element.
-  //
-  void serialize (xml::serializer&, bool start_end = true) const;
-
-protected:
-  void parse(xml::parser&, bool start_end = true);
+  template<typename T> static std::shared_ptr<element> create(xml::parser& p) {
+    return std::make_shared<T>(p, false);
+  }
 
 private:
   xml::qname tag_name_;
@@ -101,7 +98,7 @@ public:
 protected:
   struct element_info {
     xml::content content_type;
-    std::shared_ptr<element> (*construct)(xml::parser&);
+    std::shared_ptr<element> (*create)(xml::parser&);
   };
 
   using map_type = std::map<xml::qname, element_info>;
@@ -248,10 +245,6 @@ bool whitespace (const string& s) {
 } // namespace
 
 bmml::dom::element::element(parser& p, bool start_end) {
-  parse(p, start_end);
-}
-
-void bmml::dom::element::parse(parser& p, bool start_end) {
   if (start_end) p.next_expect(parser::start_element);
 
   tag_name_ = p.qname();
@@ -325,7 +318,7 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
   }
 
   p.content(content);
-  return element.construct(p);
+  return element.create(p);
 }
 
 {% for elem in dtd.iterelements() %}
