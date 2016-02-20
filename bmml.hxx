@@ -88,29 +88,32 @@ private:
   elements_type elements_;     // Complex content only.
 };
 
-struct factory {
-  using map_type =
-    std::map<xml::qname,
-             std::tuple<std::shared_ptr<element>(*)(xml::parser&),
-                        xml::content>>;
-
+class factory {
+public:
   static std::shared_ptr<element> make(xml::parser& p);
 
 protected:
-  static map_type *get_map() {
-    if (!default_map) default_map = new map_type;
+  struct element_info {
+    xml::content content_type;
+    std::shared_ptr<element> (*construct)(xml::parser&);
+  };
 
-    return default_map;
+  using map_type = std::map<xml::qname, element_info>;
+
+  static map_type *get_map() {
+    if (!map) map = new map_type;
+
+    return map;
   }
 
 private:
-  static map_type *default_map;
+  static map_type *map;
 };
 
 template<typename T>
 struct register_element : factory {
   register_element(xml::qname const& name, xml::content const& content) {
-    get_map()->insert({name, std::make_tuple(&element::create<T>, content)});
+    get_map()->insert({name, element_info{content, &element::create<T>}});
   }
 };
 
