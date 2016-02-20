@@ -312,19 +312,20 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
     return std::make_shared<element>(p, false);
   }
 
-  auto content = iter->second.content_type;
+  auto const& element = iter->second;
+  auto content = element.content_type;
 
   // WORKAROUND: Some BMML documents in the wild are not conforming to BMML 0.8
   // insofar as they have a barline element with simple content (no barline_type
   // subelement).  This trips up the parser since according to the DTD,
   // barline should be of complex type.
-  if (name == xml::qname("barline") &&
-      p.attribute_map().find(xml::qname{"value"}) != p.attribute_map().end()) {
-    content = xml::content::simple;
+  if (name == qname{"barline"} &&
+      p.attribute_map().find(qname{"value"}) != p.attribute_map().end()) {
+    content = content::simple;
   }
 
   p.content(content);
-  return iter->second.construct(p);
+  return element.construct(p);
 }
 
 {% for elem in dtd.iterelements() %}
