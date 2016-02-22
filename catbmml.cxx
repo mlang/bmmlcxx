@@ -1,9 +1,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <xml/parser>
-#include <xml/serializer>
-
 #include "bmml.hxx"
 
 using namespace std;
@@ -20,11 +17,7 @@ int main (int argc, char *argv[]) {
       ifstream ifs{argv[i]};
 
       if (ifs.good()) {
-        parser p{ifs, argv[i]};
-
-        p.next_expect(parser::start_element, "score", content::complex);
-        cout << make_shared<bmml::score>(p, false) << endl;
-        p.next_expect(parser::end_element, "score");
+        cout << bmml::parse(ifs, argv[i]) << endl;
       } else {
         cerr << "Unable to open '" << argv[i] << "'." << endl;
         return EXIT_FAILURE;

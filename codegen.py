@@ -198,6 +198,8 @@ public:
 
 // ------------------------------------------------------------------------- //
 
+std::shared_ptr<score> parse(std::istream&, std::string const& name);
+
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
 operator<<(std::ostream &out, std::shared_ptr<T> elem) {
@@ -460,6 +462,15 @@ void bmml::{{elem.name}}::{{attr.name}}(optional<bmml::{{enum}}> opt_value) {
     {{ extra_methods[elem.name]['definition'] }}
   {%- endif %}
 {% endfor %}
+std::shared_ptr<bmml::score> bmml::parse(std::istream& in, std::string const& name) {
+  parser p{in, name};
+        
+  p.next_expect(parser::start_element, "score", content::complex);
+  auto result = make_shared<bmml::score>(p, false);
+  p.next_expect(parser::end_element, "score");
+
+  return result;
+}
 """
 
 PCDATA_OPERATOR_DECLARATION = """

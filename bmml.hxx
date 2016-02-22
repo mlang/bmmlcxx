@@ -1830,6 +1830,8 @@ public:
 
 // ------------------------------------------------------------------------- //
 
+std::shared_ptr<score> parse(std::istream&, std::string const& name);
+
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
 operator<<(std::ostream &out, std::shared_ptr<T> elem) {

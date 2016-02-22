@@ -3672,3 +3672,12 @@ void bmml::value_prefix::value(bmml::value_prefix_t value) {
   }
 }
 
+std::shared_ptr<bmml::score> bmml::parse(std::istream& in, std::string const& name) {
+  parser p{in, name};
+        
+  p.next_expect(parser::start_element, "score", content::complex);
+  auto result = make_shared<bmml::score>(p, false);
+  p.next_expect(parser::end_element, "score");
+
+  return result;
+}
