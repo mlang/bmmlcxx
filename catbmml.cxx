@@ -4,7 +4,6 @@
 #include "bmml.hxx"
 
 using namespace std;
-using namespace xml;
 
 int main (int argc, char *argv[]) {
   if (argc < 2) {

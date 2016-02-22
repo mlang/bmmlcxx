@@ -1,27 +1,14 @@
 #include <fstream>
 #include <iostream>
 
-#include <xml/parser>
-#include <xml/serializer>
-
 #include "bmml.hxx"
 
 using namespace std;
-using namespace xml;
 
-using partial_voice = std::vector<std::shared_ptr<bmml::dom::element>>;
+using partial_voice = bmml::dom::element::elements_type;
 using partial_measure = std::vector<partial_voice>;
 using voice = std::vector<partial_measure>;
 using measure = std::vector<voice>;
-
-bool is_layout_element(std::shared_ptr<bmml::dom::element> e) {
-  return dynamic_pointer_cast<bmml::space>(e)
-      || dynamic_pointer_cast<bmml::newline>(e)
-      || dynamic_pointer_cast<bmml::music_hyphen>(e)
-      || dynamic_pointer_cast<bmml::separator>(e)
-      || dynamic_pointer_cast<bmml::generic_text>(e)
-      || dynamic_pointer_cast<bmml::part_name>(e);
-}
 
 ostream& operator<<(ostream& out, measure const& m) {
   for (auto v : m) {
@@ -32,9 +19,8 @@ ostream& operator<<(ostream& out, measure const& m) {
         out << "(";
         bool first = true;
         for (auto e : pv) {
-          if (!first) cout << ", ";
+          if (!first) cout << ", "; else first = false;
           out << e->tag_name();
-          first = false;
         }
         out << ")";
       }
@@ -44,6 +30,15 @@ ostream& operator<<(ostream& out, measure const& m) {
   }
 
   return out;
+}
+
+bool is_layout_element(std::shared_ptr<bmml::dom::element> e) {
+  return dynamic_pointer_cast<bmml::space>(e)
+      || dynamic_pointer_cast<bmml::newline>(e)
+      || dynamic_pointer_cast<bmml::music_hyphen>(e)
+      || dynamic_pointer_cast<bmml::separator>(e)
+      || dynamic_pointer_cast<bmml::generic_text>(e)
+      || dynamic_pointer_cast<bmml::part_name>(e);
 }
 
 int main (int argc, char *argv[]) {
@@ -58,11 +53,7 @@ int main (int argc, char *argv[]) {
       ifstream ifs{argv[i]};
 
       if (ifs.good()) {
-        parser p{ifs, argv[i]};
-
-        p.next_expect(parser::start_element, "score", content::complex);
-        auto score = make_shared<bmml::score>(p, false);
-        p.next_expect(parser::end_element, "score");
+        auto score = bmml::parse(ifs, argv[i]);
 
         for (auto sdc : *score->data()) {
           if (auto ts = dynamic_pointer_cast<bmml::time_signature>(sdc)) {
