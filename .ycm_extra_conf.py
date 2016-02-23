@@ -14,6 +14,7 @@ flags = ['-Wall', '-Wextra', '-Werror', '-Wc++98-compat', '-DNDEBUG', '-std=c++1
 #   set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 # to your CMakeLists.txt file.
 #
+compilation_database_folder = ''
 for root, dirnames, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
   if 'compile_commands.json' in filenames:
     compilation_database_folder = root
