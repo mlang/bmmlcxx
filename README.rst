@@ -15,6 +15,25 @@ easier for the programmer to perform common BMML tasks.
 
 See catbmml.cxx and driver.cxx for simple examples on how to use the library.
 
+Build requirements
+------------------
+
+You need CMake, a recent C++ compiler that supports C++11, and libstudxml_
+to build this library.
+
+.. _libstudxml: http://www.codesynthesis.com/projects/libstudxml/
+
+Build instructions
+------------------
+
+.. code-block:: console
+
+   $ git clone https://github.com/mlang/bmmlcxx
+   $ cd bmmlcxx
+   $ mkdir build
+   $ (cd build && cmake ..)
+   $ make -C build
+
 BMML Files
 ----------
 
