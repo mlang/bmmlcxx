@@ -54,14 +54,14 @@ int main (int argc, char *argv[]) {
 
       if (ifs.good()) {
         auto score = bmml::parse(ifs, argv[i]);
-	std::map<std::string, std::vector<measure>> parts;
+        std::map<std::string, std::vector<measure>> parts;
 
-        for (auto sdc : score->data()) {
+        for (auto sdc : *score->data()) {
           if (auto ts = dynamic_pointer_cast<bmml::time_signature>(sdc)) {
             cout << "global ts " << ts->values() << endl;
           } else if (auto p = dynamic_pointer_cast<bmml::part>(sdc)) {
             measure current_measure{};
-            for (auto pc : p) {
+            for (auto pc : *p) {
               if (auto inaccord = dynamic_pointer_cast<bmml::inaccord>(pc)) {
                 switch (inaccord->value()) {
                 case bmml::inaccord_t::full:
@@ -72,12 +72,12 @@ int main (int argc, char *argv[]) {
                   current_measure.back().back().emplace_back();
                 }
               } else if (auto bl = dynamic_pointer_cast<bmml::barline>(pc)) {
-		if (!current_measure.empty()) {
+                if (!current_measure.empty()) {
                   parts[p->id()].push_back(current_measure);
 
                   current_measure.clear();
                 }
-	      } else if (!is_layout_element(pc)) {
+              } else if (!is_layout_element(pc)) {
                 if (current_measure.empty()) {
                   current_measure.emplace_back();
                   current_measure.back().emplace_back();
@@ -90,12 +90,12 @@ int main (int argc, char *argv[]) {
             if (!current_measure.empty()) parts[p->id()].push_back(current_measure);
           }
         }
-	for (auto p : parts) {
-	  cout << p.first << std::endl;
-	  for (auto m : p.second) {
-	    cout << m << endl;
-	  }
-	}
+        for (auto p : parts) {
+          cout << p.first << std::endl;
+          for (auto m : p.second) {
+            cout << m << endl;
+          }
+        }
       } else {
         cerr << "Unable to open '" << argv[i] << "'." << endl;
       }
