@@ -1,9 +1,23 @@
-# - Try to find LibStudXML
-# Once done this will define
-#  LIBSTUDXML_FOUND - System has LibStudXML
-#  LIBSTUDXML_INCLUDE_DIRS - The LibStudXML include directories
-#  LIBSTUDXML_LIBRARIES - The libraries needed to use LibStudXML
-#  LIBSTUDXML_DEFINITIONS - Compiler switches required for using LibStudXML
+#.rst:
+# FindLibStudXML
+# --------------
+#
+# Find libstudxml.
+#
+# Result variables
+# ^^^^^^^^^^^^^^^^
+#
+# This module will set the following variables in your project:
+#
+# ``LIBSTUDXML_INCLUDE_DIRS``
+#   where to find header files.
+# ``LIBSTUDXML_LIBRARIES``
+#   the libraries to link against to use libstudxml.
+# ``LIBSTUDXML_DEFINITIONS``
+#   You should add_definitons(${LIBSTUDXML_DEFINITIONS}) before compiling code
+#   that includes libstudxml files.
+# ``LIBSTUDXML_FOUND``
+#   If false, do not try to use libstudxml.
 
 find_package(PkgConfig)
 pkg_check_modules(PC_LIBSTUDXML QUIET libstudxml)
