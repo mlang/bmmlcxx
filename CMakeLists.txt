@@ -2,24 +2,17 @@ cmake_minimum_required(VERSION 3.4.1)
 project(bmmlcxx VERSION 0.1 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(libstudxml_SOURCES
-  xml/qname.cxx xml/parser.cxx xml/serializer.cxx xml/value-traits.cxx
-)
-set(libstudxml_GENX_SOURCES
-  xml/details/genx/genx.c
-  xml/details/genx/char-props.c
-)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(LibStudXML REQUIRED)
 find_package(Boost REQUIRED)
-find_package(EXPAT REQUIRED)
-list(APPEND libstudxml_SOURCES ${libstudxml_GENX_SOURCES})
-add_library(studxml STATIC ${libstudxml_SOURCES})
-target_include_directories(studxml PUBLIC ${EXPAT_INCLUDE_DIRS})
-target_link_libraries(studxml ${EXPAT_LIBRARIES})
 
 add_library(bmmlcxx STATIC bmml.cxx)
-target_include_directories(bmmlcxx PUBLIC ${Boost_INCLUDE_DIRS})
-target_link_libraries(bmmlcxx studxml)
+target_include_directories(bmmlcxx
+  PUBLIC ${Boost_INCLUDE_DIRS} ${LIBSTUDXML_INCLUDE_DIRS}
+)
+target_link_libraries(bmmlcxx ${LIBSTUDXML_LIBRARIES})
 
+# Tools
 add_executable(driver driver.cxx)
 target_link_libraries(driver bmmlcxx)
 
