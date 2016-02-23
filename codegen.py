@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# $ python3 -c "from codegen import *; hpp()"
-# $ python3 -c "from codegen import *; cpp()"
-
+from __future__ import print_function
 from jinja2 import DictLoader, Environment
 
 LIBRARY_HEADER = """
@@ -493,8 +491,6 @@ templates = Environment(loader=DictLoader(globals()))
 
 from lxml.etree import DTD
 
-bmml = DTD('bmml.dtd')
-
 enumerations = {
   ('full', 'part', 'division'):
   {'name': 'inaccord_t'},
@@ -588,54 +584,26 @@ for element in ['alteration', 'duration', 'pitch']:
       {'class': element, 'type': 'int'})
   }
 
-enum_classes = sorted([(v['name'], k) for k, v in enumerations.items()
-                       if not v in [e.name for e in bmml.iterelements()]])
+if __name__ == '__main__':
+  import argparse
 
-def hpp():
-  print(template('LIBRARY_HEADER').render(
-    {'dtd': bmml,
-     'enumerations': enumerations,
-     'extra_methods': methods,
-     'enum_classes': enum_classes,
-     'forwards_for': {'ornament': ['ornament_type'],
-                      'score': ['score_data', 'score_header']}
-    }))
+  cmdline = argparse.ArgumentParser()
+  cmdline.add_argument("dtd")
+  cmdline.add_argument("hxx")
+  cmdline.add_argument("cxx")
+  args = cmdline.parse_args()
+  dtd = DTD(args.dtd)
+  metadata = {
+    'dtd': dtd,
+    'enumerations': enumerations,
+    'extra_methods': methods,
+    'enum_classes': sorted([(v['name'], k) for k, v in enumerations.items()
+                            if not v in [e.name for e in dtd.iterelements()]]),
+    'forwards_for': {'ornament': ['ornament_type'],
+                     'score': ['score_data', 'score_header']}
+  }
+  with open(args.hxx, 'w') as hxx:
+    print(template('LIBRARY_HEADER').render(metadata), file=hxx)
+  with open(args.cxx, 'w') as cxx:
+    print(template('LIBRARY_IMPLEMENTATION').render(metadata), file=cxx)
 
-def cpp():
-  print(template('LIBRARY_IMPLEMENTATION').render(
-    {'dtd': bmml,
-     'enumerations': enumerations,
-     'extra_methods': methods,
-     'enum_classes': enum_classes
-    }))
-
-def vlist(content):
-  if content.type == 'element':
-    return [content.name]
-  elif content.type == 'seq' or content.type == 'or':
-    return vlist(content.left) + vlist(content.right)
-
-class FoundOr(Exception):
-  pass
-
-def seq_only1(content):
-  if content.type == 'element':
-    return [(content.name, content.occur)]
-  elif content.type == 'seq':
-    return seq_only1(content.left) + seq_only1(content.right)
-  else:
-    raise FoundOr()
-
-def seq_only(content):
-  try:
-    return seq_only1(content)
-  except FoundOr as e:
-    return None
-
-
-def variants():
-  for e in bmml.iterelements():
-    if e.content != None and e.content.type != 'pcdata':
-      seq = seq_only(e.content)
-      if seq != None and len(seq)==len(set(seq)):
-        print(e.name, seq_only(e.content))
