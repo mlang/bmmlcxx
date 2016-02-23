@@ -5,8 +5,19 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(LibStudXML REQUIRED)
 find_package(Boost REQUIRED)
-
-add_library(bmmlcxx SHARED bmml.cxx)
+find_package(PythonInterp REQUIRED)
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/bmml.hxx
+         ${PROJECT_BINARY_DIR}/bmml.cxx
+  COMMAND ${PYTHON_EXECUTABLE}
+          ${PROJECT_SOURCE_DIR}/codegen.py
+          ${PROJECT_SOURCE_DIR}/bmml.dtd
+          ${PROJECT_BINARY_DIR}/bmml.hxx
+          ${PROJECT_BINARY_DIR}/bmml.cxx
+  DEPENDS ${PROJECT_SOURCE_DIR}/bmml.dtd
+          ${PROJECT_SOURCE_DIR}/codegen.py
+)
+add_library(bmmlcxx SHARED ${PROJECT_BINARY_DIR}/bmml.cxx)
 target_include_directories(bmmlcxx
   PUBLIC ${Boost_INCLUDE_DIRS} ${LIBSTUDXML_INCLUDE_DIRS}
 )
@@ -14,7 +25,7 @@ target_link_libraries(bmmlcxx ${LIBSTUDXML_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION ${PROJECT_VERSION}
-  PUBLIC_HEADER bmml.hxx
+  PUBLIC_HEADER ${PROJECT_BINARY_DIR}/bmml.hxx
 )
 
 # Tools
