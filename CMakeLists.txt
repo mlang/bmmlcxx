@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(LibStudXML REQUIRED)
 find_package(Boost REQUIRED)
 
-add_library(bmmlcxx STATIC bmml.cxx)
+add_library(bmmlcxx SHARED bmml.cxx)
 target_include_directories(bmmlcxx
   PUBLIC ${Boost_INCLUDE_DIRS} ${LIBSTUDXML_INCLUDE_DIRS}
 )
