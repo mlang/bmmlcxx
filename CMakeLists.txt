@@ -15,9 +15,9 @@ add_custom_command(
 )
 add_library(bmmlcxx SHARED ${PROJECT_BINARY_DIR}/bmml.cxx)
 target_include_directories(bmmlcxx
-  PUBLIC ${Boost_INCLUDE_DIRS} ${LIBSTUDXML_INCLUDE_DIRS}
+  PUBLIC ${Boost_INCLUDE_DIRS} ${LibStudXML_INCLUDE_DIRS}
 )
-target_link_libraries(bmmlcxx ${LIBSTUDXML_LIBRARIES})
+target_link_libraries(bmmlcxx ${LibStudXML_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION ${PROJECT_VERSION}
