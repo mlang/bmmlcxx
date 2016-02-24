@@ -21,6 +21,15 @@ ostream& operator<<(ostream& out, measure const& m) {
         for (auto e : pv) {
           if (!first) cout << ", "; else first = false;
           out << e->tag_name();
+          if (auto n = dynamic_pointer_cast<bmml::note>(e)) {
+            auto nd = n->find_element<bmml::note_data>();
+            auto dur = nd->find_element<bmml::duration>();
+            if (dur) out << " " << int(*dur);
+          } else if (auto r = dynamic_pointer_cast<bmml::rest>(e)) {
+            auto rd = r->find_element<bmml::rest_data>();
+            auto dur = rd->find_element<bmml::duration>();
+            out << " " << int(*dur);
+          }
         }
         out << ")";
       }
@@ -41,6 +50,49 @@ bool is_layout_element(std::shared_ptr<bmml::dom::element> e) {
       || dynamic_pointer_cast<bmml::part_name>(e);
 }
 
+// Put score content into part specific measure structures.
+std::map<std::string, std::vector<measure>>
+get_parts(shared_ptr<bmml::score> score) {
+  std::map<std::string, std::vector<measure>> parts;
+
+  for (auto sdc : *score->data()) {
+    if (auto ts = dynamic_pointer_cast<bmml::time_signature>(sdc)) {
+      cout << "global ts " << ts->values() << endl;
+    } else if (auto p = dynamic_pointer_cast<bmml::part>(sdc)) {
+      measure current_measure{};
+      for (auto pc : *p) {
+        if (auto inaccord = dynamic_pointer_cast<bmml::inaccord>(pc)) {
+          switch (inaccord->value()) {
+          case bmml::inaccord_t::full:
+            current_measure.emplace_back();
+          case bmml::inaccord_t::part:
+            current_measure.back().emplace_back();
+          case bmml::inaccord_t::division:
+            current_measure.back().back().emplace_back();
+          }
+        } else if (auto bl = dynamic_pointer_cast<bmml::barline>(pc)) {
+          if (!current_measure.empty()) {
+            parts[p->id()].push_back(current_measure);
+
+            current_measure.clear();
+          }
+        } else if (!is_layout_element(pc)) {
+          if (current_measure.empty()) {
+            current_measure.emplace_back();
+            current_measure.back().emplace_back();
+            current_measure.back().back().emplace_back();
+          }
+
+          current_measure.back().back().back().push_back(pc);
+        }
+      }
+      if (!current_measure.empty()) parts[p->id()].push_back(current_measure);
+    }
+  }
+
+  return parts;
+}
+
 int main (int argc, char *argv[]) {
   if (argc < 2) {
     cerr << "usage: " << argv[0] << " [<bmml-file>...]" << endl;
@@ -54,44 +106,8 @@ int main (int argc, char *argv[]) {
 
       if (ifs.good()) {
         auto score = bmml::parse(ifs, argv[i]);
-        std::map<std::string, std::vector<measure>> parts;
 
-        for (auto sdc : *score->data()) {
-          if (auto ts = dynamic_pointer_cast<bmml::time_signature>(sdc)) {
-            cout << "global ts " << ts->values() << endl;
-          } else if (auto p = dynamic_pointer_cast<bmml::part>(sdc)) {
-            measure current_measure{};
-            for (auto pc : *p) {
-              if (auto inaccord = dynamic_pointer_cast<bmml::inaccord>(pc)) {
-                switch (inaccord->value()) {
-                case bmml::inaccord_t::full:
-                  current_measure.emplace_back();
-                case bmml::inaccord_t::part:
-                  current_measure.back().emplace_back();
-                case bmml::inaccord_t::division:
-                  current_measure.back().back().emplace_back();
-                }
-              } else if (auto bl = dynamic_pointer_cast<bmml::barline>(pc)) {
-                if (!current_measure.empty()) {
-                  parts[p->id()].push_back(current_measure);
-
-                  current_measure.clear();
-                }
-              } else if (!is_layout_element(pc)) {
-                if (current_measure.empty()) {
-                  current_measure.emplace_back();
-                  current_measure.back().emplace_back();
-                  current_measure.back().back().emplace_back();
-                }
-
-                current_measure.back().back().back().push_back(pc);
-              }
-            }
-            if (!current_measure.empty()) parts[p->id()].push_back(current_measure);
-          }
-        }
-
-        for (auto p : parts) {
+        for (auto p : get_parts(score)) {
           cout << p.first << std::endl;
           for (auto m : p.second) {
             cout << m << endl;
