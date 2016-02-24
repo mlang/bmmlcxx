@@ -7,15 +7,11 @@ find_package(LibStudXML REQUIRED)
 find_package(Boost REQUIRED)
 find_package(PythonInterp REQUIRED)
 add_custom_command(
-  OUTPUT ${PROJECT_BINARY_DIR}/bmml.hxx
-         ${PROJECT_BINARY_DIR}/bmml.cxx
-  COMMAND ${PYTHON_EXECUTABLE}
-          ${PROJECT_SOURCE_DIR}/codegen.py
+  OUTPUT ${PROJECT_BINARY_DIR}/bmml.hxx ${PROJECT_BINARY_DIR}/bmml.cxx
+  COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/codegen.py
           ${PROJECT_SOURCE_DIR}/bmml.dtd
-          ${PROJECT_BINARY_DIR}/bmml.hxx
-          ${PROJECT_BINARY_DIR}/bmml.cxx
-  DEPENDS ${PROJECT_SOURCE_DIR}/bmml.dtd
-          ${PROJECT_SOURCE_DIR}/codegen.py
+          ${PROJECT_BINARY_DIR}/bmml.hxx ${PROJECT_BINARY_DIR}/bmml.cxx
+  DEPENDS ${PROJECT_SOURCE_DIR}/codegen.py ${PROJECT_SOURCE_DIR}/bmml.dtd
 )
 add_library(bmmlcxx SHARED ${PROJECT_BINARY_DIR}/bmml.cxx)
 target_include_directories(bmmlcxx
@@ -37,7 +33,6 @@ target_link_libraries(catbmml bmmlcxx)
 
 install(TARGETS bmmlcxx catbmml
   EXPORT ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
   PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
