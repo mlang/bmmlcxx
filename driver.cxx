@@ -90,6 +90,7 @@ int main (int argc, char *argv[]) {
             if (!current_measure.empty()) parts[p->id()].push_back(current_measure);
           }
         }
+
         for (auto p : parts) {
           cout << p.first << std::endl;
           for (auto m : p.second) {

@@ -13,11 +13,11 @@ add_custom_command(
           ${PROJECT_BINARY_DIR}/bmml.hxx ${PROJECT_BINARY_DIR}/bmml.cxx
   DEPENDS ${PROJECT_SOURCE_DIR}/codegen.py ${PROJECT_SOURCE_DIR}/bmml.dtd
 )
-add_library(bmmlcxx SHARED ${PROJECT_BINARY_DIR}/bmml.cxx)
-target_include_directories(bmmlcxx
+add_library(${PROJECT_NAME} SHARED ${PROJECT_BINARY_DIR}/bmml.cxx)
+target_include_directories(${PROJECT_NAME}
   PUBLIC ${Boost_INCLUDE_DIRS} ${LibStudXML_INCLUDE_DIRS}
 )
-target_link_libraries(bmmlcxx ${LibStudXML_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${LibStudXML_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION ${PROJECT_VERSION}
@@ -26,12 +26,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # Tools
 add_executable(driver driver.cxx)
-target_link_libraries(driver bmmlcxx)
+target_link_libraries(driver ${PROJECT_NAME})
 
 add_executable(catbmml catbmml.cxx)
-target_link_libraries(catbmml bmmlcxx)
+target_link_libraries(catbmml ${PROJECT_NAME})
 
-install(TARGETS bmmlcxx catbmml
+install(TARGETS ${PROJECT_NAME} catbmml
   EXPORT ${PROJECT_NAME}
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
