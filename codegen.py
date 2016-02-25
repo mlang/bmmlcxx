@@ -154,7 +154,7 @@ class {{forward}};
     {%- endfor %}
   {%- endif %}
 
-class {{elem.name}} : public dom::element {
+class {{elem.name}} final : public dom::element {
   REGISTER_DECLARATION({{elem.name}});
 
 public:
