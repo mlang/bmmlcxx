@@ -21,11 +21,11 @@ ostream& operator<<(ostream& out, measure const& m) {
         for (auto e : pv) {
           if (!first) cout << ", "; else first = false;
           out << e->tag_name();
-          if (auto n = dynamic_pointer_cast<bmml::note>(e)) {
+          if (auto n = e->as<bmml::note>()) {
             auto nd = n->find_element<bmml::note_data>();
             auto dur = nd->find_element<bmml::duration>();
             if (dur) out << " " << int(*dur);
-          } else if (auto r = dynamic_pointer_cast<bmml::rest>(e)) {
+          } else if (auto r = e->as<bmml::rest>()) {
             auto rd = r->find_element<bmml::rest_data>();
             auto dur = rd->find_element<bmml::duration>();
             out << " " << int(*dur);
@@ -42,12 +42,12 @@ ostream& operator<<(ostream& out, measure const& m) {
 }
 
 bool is_layout_element(std::shared_ptr<bmml::dom::element> e) {
-  return dynamic_pointer_cast<bmml::space>(e)
-      || dynamic_pointer_cast<bmml::newline>(e)
-      || dynamic_pointer_cast<bmml::music_hyphen>(e)
-      || dynamic_pointer_cast<bmml::separator>(e)
-      || dynamic_pointer_cast<bmml::generic_text>(e)
-      || dynamic_pointer_cast<bmml::part_name>(e);
+  return e->as<bmml::space>()
+      || e->as<bmml::newline>()
+      || e->as<bmml::music_hyphen>()
+      || e->as<bmml::separator>()
+      || e->as<bmml::generic_text>()
+      || e->as<bmml::part_name>();
 }
 
 // Put score content into part specific measure structures.
@@ -56,12 +56,12 @@ get_parts(shared_ptr<bmml::score> score) {
   std::map<std::string, std::vector<measure>> parts;
 
   for (auto sdc : *score->data()) {
-    if (auto ts = dynamic_pointer_cast<bmml::time_signature>(sdc)) {
+    if (auto ts = sdc->as<bmml::time_signature>()) {
       cout << "global ts " << ts->values() << endl;
-    } else if (auto p = dynamic_pointer_cast<bmml::part>(sdc)) {
+    } else if (auto p = sdc->as<bmml::part>()) {
       measure current_measure{};
       for (auto pc : *p) {
-        if (auto inaccord = dynamic_pointer_cast<bmml::inaccord>(pc)) {
+        if (auto inaccord = pc->as<bmml::inaccord>()) {
           switch (inaccord->value()) {
           case bmml::inaccord_t::full:
             current_measure.emplace_back();
@@ -70,7 +70,7 @@ get_parts(shared_ptr<bmml::score> score) {
           case bmml::inaccord_t::division:
             current_measure.back().back().emplace_back();
           }
-        } else if (auto bl = dynamic_pointer_cast<bmml::barline>(pc)) {
+        } else if (auto bl = pc->as<bmml::barline>()) {
           if (!current_measure.empty()) {
             parts[p->id()].push_back(current_measure);
 

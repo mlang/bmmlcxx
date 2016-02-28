@@ -26,7 +26,7 @@ namespace dom {
 // empty, simple, and complex content (no mixed content) and is not
 // particularly efficient.
 
-class element {
+class element : public std::enable_shared_from_this<element> {
 public:
   using attributes_type = std::map<xml::qname, std::string>;
   using elements_type = std::vector<std::shared_ptr<element>>;
@@ -63,16 +63,23 @@ public:
 
   // Utilities
   //
+  template<typename T> auto as() const {
+    return std::dynamic_pointer_cast<T const>(shared_from_this());
+  }
+  template<typename T> auto as() {
+    return std::dynamic_pointer_cast<T>(shared_from_this());
+  }
+
   template<typename T> std::shared_ptr<T> find_element() const {
     for (auto &&e : elements_)
-      if (auto t = std::dynamic_pointer_cast<T>(e)) return t;
+      if (auto t = e->as<T>()) return t;
     return {};
   }
 
   template<typename T> std::vector<std::shared_ptr<T>> find_elements() const {
     std::vector<std::shared_ptr<T>> result;
     for (auto &&e : elements_)
-      if (auto t = std::dynamic_pointer_cast<T>(e))
+      if (auto t = e->as<T>())
         result.push_back(std::move(t));
 
     return result;
@@ -201,9 +208,9 @@ std::shared_ptr<score> parse(std::istream&, std::string const& name);
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
 operator<<(std::ostream &out, std::shared_ptr<T> elem) {
-  if (!std::dynamic_pointer_cast<note_data>(elem) &&
-      !std::dynamic_pointer_cast<rest_data>(elem) &&
-      !std::dynamic_pointer_cast<score_header>(elem))
+  if (!elem->template as<note_data>() &&
+      !elem->template as<rest_data>() &&
+      !elem->template as<score_header>())
   {
     auto const& text = elem->text();
     if (text.empty()) for (auto child : *elem) out << child; else out << text;
