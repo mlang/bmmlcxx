@@ -70,6 +70,13 @@ public:
     return std::dynamic_pointer_cast<T>(shared_from_this());
   }
 
+  template<typename T> bool is() const {
+    return dynamic_cast<T const *>(this) != nullptr;
+  }
+  template<typename T, typename U, typename... More> bool is() const {
+    return is<T>() || is<U, More...>();
+  }
+
   template<typename T> std::shared_ptr<T> find_element() const {
     for (auto &&e : elements_)
       if (auto t = e->as<T>()) return t;
@@ -208,10 +215,7 @@ std::shared_ptr<score> parse(std::istream&, std::string const& name);
 template<typename T>
 typename std::enable_if<std::is_base_of<dom::element, T>::value, std::ostream&>::type
 operator<<(std::ostream &out, std::shared_ptr<T> elem) {
-  if (!elem->template as<note_data>() &&
-      !elem->template as<rest_data>() &&
-      !elem->template as<score_header>())
-  {
+  if (!elem->template is<note_data, rest_data, score_header>()) {
     auto const& text = elem->text();
     if (text.empty()) for (auto child : *elem) out << child; else out << text;
   }

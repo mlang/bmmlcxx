@@ -42,12 +42,9 @@ ostream& operator<<(ostream& out, measure const& m) {
 }
 
 bool is_layout_element(std::shared_ptr<bmml::dom::element> e) {
-  return e->as<bmml::space>()
-      || e->as<bmml::newline>()
-      || e->as<bmml::music_hyphen>()
-      || e->as<bmml::separator>()
-      || e->as<bmml::generic_text>()
-      || e->as<bmml::part_name>();
+  return e->is<bmml::space, bmml::newline,
+               bmml::music_hyphen, bmml::separator,
+               bmml::generic_text, bmml::part_name>();
 }
 
 // Put score content into part specific measure structures.
