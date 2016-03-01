@@ -237,15 +237,21 @@ LIBRARY_IMPLEMENTATION = """
 
 #include <boost/lexical_cast.hpp>
 
-using namespace std;
-using namespace xml;
+using std::make_shared;
+using std::shared_ptr;
+using std::vector;
+using xml::content;
+using xml::parser;
+using xml::parsing;
+using xml::qname;
+using xml::serializer;
 using bmml::optional;
 
 bmml::dom::factory::map_type *bmml::dom::factory::map{};
 
 namespace {
 
-bool whitespace (const string& s) {
+bool whitespace (const std::string& s) {
   for (char c : s) {
     if (c != 0x20 && c != 0x0A && c != 0x0D && c != 0x09) return false;
   }
