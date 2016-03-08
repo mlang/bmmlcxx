@@ -7,10 +7,9 @@ LIBRARY_HEADER = """
 #define BMML_HXX
 
 #include <stdexcept>
+#include <xml/forward>
 #include <xml/content>
-#include <xml/parser>
 #include <xml/qname>
-#include <xml/serializer>
 
 #include <map>
 #include <memory>
@@ -64,7 +63,7 @@ public:
   // Serialize an element. If start_end is false, then don't serialize
   // the start and end of the element.
   //
-  void serialize (xml::serializer&, bool start_end = true) const;
+  void serialize(xml::serializer&, bool start_end = true) const;
 
   // Utilities
   //
@@ -613,10 +612,10 @@ std::shared_ptr<bmml::score> bmml::parse(std::istream& in, std::string const& na
   parser p{in, name};
         
   p.next_expect(parser::start_element, "score", content::complex);
-  auto score = dom::factory::make(p)->as<bmml::score>();
+  auto result = dom::factory::make(p)->as<score>();
   p.next_expect(parser::end_element, "score");
 
-  return score;
+  return result;
 }
 """
 
