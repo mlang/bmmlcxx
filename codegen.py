@@ -53,8 +53,8 @@ public:
   elements_type::iterator begin() { return elements_.begin(); }
   elements_type::iterator end() { return elements_.end(); }
 
-  std::shared_ptr<element> parent() { return parent_; }
-  std::shared_ptr<element const> parent() const { return parent_; }
+  std::shared_ptr<element> parent() { return parent_.lock(); }
+  std::shared_ptr<element const> parent() const { return parent_.lock(); }
 
   // Parse an element. If start_end is false, then don't parse the
   // start and end of the element.
@@ -108,7 +108,7 @@ private:
   attributes_type attributes_;
   std::string text_;           // Simple content only.
   elements_type elements_;     // Complex content only.
-  std::shared_ptr<element> parent_;
+  std::weak_ptr<element> parent_;
 };
 
 class factory {
@@ -226,11 +226,14 @@ class {{forward}};
 class {{elem.name}} final : public {{parent_class}} {
   REGISTER_DECLARATION({{elem.name}});
 
-public:
+protected:
+  friend std::shared_ptr<element>
+  dom::element::create<{{elem.name}}>(xml::parser&, std::shared_ptr<element>);
   {{elem.name}}(std::shared_ptr<dom::element> parent = nullptr)
   : {{parent_class}}(parent) {
   }
 
+public:
   {%- for attr in elem.iterattributes() %}
     {%- if attr is required_string_attribute %}
 
