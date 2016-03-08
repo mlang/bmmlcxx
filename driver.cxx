@@ -80,7 +80,7 @@ get_parts(shared_ptr<bmml::score> score) {
             current_measure.back().back().emplace_back();
           }
 
-          current_measure.back().back().back().push_back(pc);
+          current_measure.back().back().back().emplace_back(move(pc));
         }
       }
       if (!current_measure.empty()) parts[p->id()].push_back(current_measure);
@@ -105,7 +105,10 @@ int main (int argc, char *argv[]) {
         auto score = bmml::parse(ifs, argv[i]);
 
         for (auto p : get_parts(score)) {
-          cout << p.first << std::endl;
+          cout << p.first << endl;
+          auto part_data = bmml::recursively_find_id(score, p.first);
+          if (part_data && part_data->is<bmml::part_data>())
+            cout << "Found part_data" << endl;
           for (auto m : p.second) {
             cout << m << endl;
           }

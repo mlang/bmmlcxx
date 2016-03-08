@@ -139,7 +139,40 @@ static dom::register_element<NAME> _factory_registration;
 bmml::dom::register_element<bmml::NAME>                  \\
 bmml::NAME::_factory_registration{QNAME, CONTENT}
 
+class id : public std::string {
+public:
+  id(std::string const& id) : std::string{id} {}
+};
+
+class id_ref : public std::string {
+public:
+  id_ref(std::string const& id) : std::string{id} {}
+};
+
 } // namespace dom
+
+class with_id : public dom::element {
+protected:
+  with_id(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+
+public:
+  dom::id id() const;
+  void id(dom::id const&);
+};
+
+class with_id_ref : public dom::element {
+protected:
+  with_id_ref(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  }
+          
+public:
+  dom::id_ref id() const;
+  void id(dom::id_ref const&);
+};
+
+std::shared_ptr<with_id>
+recursively_find_id(std::shared_ptr<dom::element> elem, dom::id_ref const& id);
 
 class illegal_enumeration: public std::runtime_error {
 public:
@@ -168,11 +201,13 @@ class {{forward}};
     {%- endfor %}
   {%- endif %}
 
-class {{elem.name}} final : public dom::element {
+  {%- set parent_class = superclass(elem) %}
+class {{elem.name}} final : public {{parent_class}} {
   REGISTER_DECLARATION({{elem.name}});
 
 public:
-  {{elem.name}}(xml::parser& p, bool start_end = true) : dom::element(p, start_end) {
+  {{elem.name}}(xml::parser& p, bool start_end = true)
+  : {{parent_class}}(p, start_end) {
   }
 
   {%- for attr in elem.iterattributes() %}
@@ -315,6 +350,17 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
   if (start_end) s.end_element ();
 }
 
+std::shared_ptr<bmml::with_id>
+bmml::recursively_find_id(std::shared_ptr<bmml::dom::element> elem, bmml::dom::id_ref const& id) {
+  if (auto e = elem->as<with_id>())
+    if (e->id() == id) return e;
+
+  for (auto child : *elem)
+    if (auto e = recursively_find_id(child, id)) return std::move(e);
+
+  return {};
+}
+
 shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
   auto name = p.qname();
   auto iter = get_map()->find(name);
@@ -336,6 +382,28 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p) {
 
   p.content(content);
   return element.create(p);
+}
+
+bmml::dom::id bmml::with_id::id() const {
+  auto iter = attributes().find(qname{"id"});
+  if (iter != attributes().end()) return dom::id{iter->second};
+            
+  throw missing_attribute{};
+}
+
+void bmml::with_id::id(dom::id const& value) {
+  attributes()[qname{"id"}] = value;
+}
+
+bmml::dom::id_ref bmml::with_id_ref::id() const {
+  auto iter = attributes().find(qname{"id"});
+  if (iter != attributes().end()) return dom::id_ref{iter->second};
+            
+  throw missing_attribute{};
+}
+
+void bmml::with_id_ref::id(dom::id_ref const& value) {
+  attributes()[qname{"id"}] = value;
 }
 
 {% for elem in dtd.iterelements() %}
@@ -549,8 +617,16 @@ templates.filters['mangle'] = lambda ident: \
    '256th': 'twohundredfiftysixth',
    'continue': 'continue_'}.get(ident, ident)
 templates.globals['tuple'] = tuple
+templates.globals['superclass'] = lambda elem: \
+  next(({'id': 'with_id', 'idref': 'with_id_ref'}.get(a.type)
+        for a in elem.iterattributes() if a.name == 'id'),
+       'dom::element')
+templates.tests['required_id_attribute'] = lambda a: \
+  a.type == 'id' and a.default == 'required'
+templates.tests['required_idref_attribute'] = lambda a: \
+  a.type == 'idref' and a.default == 'required'
 templates.tests['required_string_attribute'] = lambda a: \
-  a.type in ['id', 'cdata', 'idref'] and a.default == 'required'
+  a.type == 'cdata' and a.default == 'required'
 templates.tests['implied_string_attribute'] = lambda a: \
   a.type in ['id', 'cdata', 'idref'] and a.default == 'implied'
 templates.tests['boolean_enumeration_attribute'] = lambda a: \
