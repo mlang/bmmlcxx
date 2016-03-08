@@ -57,6 +57,9 @@ get_parts(shared_ptr<bmml::score> score) {
       cout << "global ts " << ts->values() << endl;
     } else if (auto p = sdc->as<bmml::part>()) {
       measure current_measure{};
+      auto part_data = p->id()->as<bmml::part_data>();
+      if (part_data) cout << "Found part_data" << endl;
+
       for (auto pc : *p) {
         if (auto inaccord = pc->as<bmml::inaccord>()) {
           switch (inaccord->value()) {
@@ -106,9 +109,6 @@ int main (int argc, char *argv[]) {
 
         for (auto p : get_parts(score)) {
           cout << p.first << endl;
-          auto part_data = bmml::recursively_find_id(score, p.first);
-          if (part_data && part_data->is<bmml::part_data>())
-            cout << "Found part_data" << endl;
           for (auto m : p.second) {
             cout << m << endl;
           }
