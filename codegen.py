@@ -27,11 +27,13 @@ namespace dom {
 // particularly efficient.
 
 class element : public std::enable_shared_from_this<element> {
+protected:
+  element(std::shared_ptr<element> parent);
 public:
   using attributes_type = std::map<xml::qname, std::string>;
   using elements_type = std::vector<std::shared_ptr<element>>;
 
-  element(const xml::qname& name) : tag_name_(name) {}
+  element(element const&) = delete;
   virtual ~element() = default;
 
   xml::qname const& tag_name() const { return tag_name_; }
@@ -51,13 +53,13 @@ public:
   elements_type::iterator begin() { return elements_.begin(); }
   elements_type::iterator end() { return elements_.end(); }
 
-  element *parent() { return parent_; }
-  element const *parent() const { return parent_; }
+  std::shared_ptr<element> parent() { return parent_; }
+  std::shared_ptr<element const> parent() const { return parent_; }
 
   // Parse an element. If start_end is false, then don't parse the
   // start and end of the element.
   //
-  element (xml::parser&, bool start_end = true, element *parent = nullptr);
+  void parse(xml::parser&, bool start_end = true);
 
   // Serialize an element. If start_end is false, then don't serialize
   // the start and end of the element.
@@ -95,8 +97,10 @@ public:
     return result;
   }
 
-  template<typename T> static std::shared_ptr<element> create(xml::parser& p, element *parent) {
-    return std::make_shared<T>(p, false, parent);
+  template<typename T> static std::shared_ptr<element> create(xml::parser& p, std::shared_ptr<element> parent = nullptr) {
+    auto elem = std::shared_ptr<element>(new T{parent});
+    elem->parse(p, false);
+    return elem;
   }
 
 private:
@@ -104,17 +108,17 @@ private:
   attributes_type attributes_;
   std::string text_;           // Simple content only.
   elements_type elements_;     // Complex content only.
-  element *parent_;
+  std::shared_ptr<element> parent_;
 };
 
 class factory {
 public:
-  static std::shared_ptr<element> make(xml::parser& parser, element* parent);
+  static std::shared_ptr<element> make(xml::parser& parser, std::shared_ptr<element> parent = nullptr);
 
 protected:
   struct element_info {
     xml::content content_type;
-    std::shared_ptr<element> (*create)(xml::parser&, element *parent);
+    std::shared_ptr<element> (*create)(xml::parser&, std::shared_ptr<element> parent);
   };
 
   using map_type = std::map<xml::qname, element_info>;
@@ -152,68 +156,43 @@ public:
 
 class with_id : public dom::element {
 protected:
-  with_id(xml::parser& p, bool start_end = true, dom::element *parent = nullptr)
-  : dom::element(p, start_end, parent) {
-  }
+  with_id(std::shared_ptr<dom::element> parent = nullptr);
 
 public:
   dom::id id() const;
-  void id(dom::id const&);
+  void id(std::string const&);
 };
 
 namespace dom {
         
 class id_ref : public std::string {
-  element *toplevel;
+  std::shared_ptr<element> toplevel;
 public:
-  id_ref(std::string const& id, dom::element *toplevel)
-  : std::string{id}, toplevel{toplevel} {}
+  id_ref(std::string const& id, std::shared_ptr<dom::element> toplevel);
 
-  std::shared_ptr<bmml::with_id> operator->() const {
-    if (auto e = toplevel->as<with_id>())
-      if (e->id() == *this) return e;
-                
-    for (auto child : *toplevel) {
-      auto ref = id_ref{static_cast<std::string>(*this), child.get()};
-      if (auto e = ref.operator->())
-        return std::move(e);
-    }
-
-    return {};
-  }
+  std::shared_ptr<bmml::with_id> operator->() const;
 };
 
-class id_ref_to_const : public std::string {
-  element const *toplevel;
+class const_id_ref : public std::string {
+  std::shared_ptr<element const> toplevel;
 public:
-  id_ref_to_const(std::string const& id, dom::element const *toplevel)
-  : std::string{id}, toplevel{toplevel} {}
-          
-  std::shared_ptr<bmml::with_id const> operator->() const {
-    if (auto e = toplevel->as<with_id>())
-      if (e->id() == *this) return e;
-                          
-    for (auto child : *toplevel) {
-      auto ref = id_ref_to_const{static_cast<std::string>(*this), child.get()};
-      if (auto e = ref.operator->()) return std::move(e);
-    }
-                              
-    return {};
-  }
+  const_id_ref(std::string const& id, std::shared_ptr<dom::element const> toplevel);
+
+  std::shared_ptr<bmml::with_id const> operator->() const;
 };
 
 } // namespace dom
 
 class with_id_ref : public dom::element {
 protected:
-  with_id_ref(xml::parser& p, bool start_end = true, dom::element *parent = nullptr)
-  : dom::element(p, start_end, parent) {
+  with_id_ref(std::shared_ptr<dom::element> parent = nullptr)
+  : dom::element(parent) {
   }
           
 public:
-  dom::id_ref_to_const id() const;
+  dom::const_id_ref id() const;
   dom::id_ref id();
-  void id(dom::id_ref const&);
+  void id(std::string const&);
 };
 
 class illegal_enumeration: public std::runtime_error {
@@ -248,8 +227,8 @@ class {{elem.name}} final : public {{parent_class}} {
   REGISTER_DECLARATION({{elem.name}});
 
 public:
-  {{elem.name}}(xml::parser& p, bool start_end = true, dom::element *parent = nullptr)
-  : {{parent_class}}(p, start_end, parent) {
+  {{elem.name}}(std::shared_ptr<dom::element> parent = nullptr)
+  : {{parent_class}}(parent) {
   }
 
   {%- for attr in elem.iterattributes() %}
@@ -338,8 +317,11 @@ bool whitespace (const std::string& s) {
 
 } // namespace
 
-bmml::dom::element::element(parser& p, bool start_end, bmml::dom::element *parent)
+bmml::dom::element::element(std::shared_ptr<bmml::dom::element> parent)
 : parent_{parent} {
+}
+
+void bmml::dom::element::parse(parser& p, bool start_end) {
   if (start_end) p.next_expect(parser::start_element);
 
   tag_name_ = p.qname();
@@ -356,7 +338,7 @@ bmml::dom::element::element(parser& p, bool start_end, bmml::dom::element *paren
         text_.clear();
       }
 
-      elements_.push_back(dom::factory::make(p, this));
+      elements_.push_back(dom::factory::make(p, shared_from_this()));
       p.next_expect(parser::end_element, elements_.back()->tag_name());
 
       break;
@@ -393,11 +375,11 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
   if (start_end) s.end_element ();
 }
 
-shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p, bmml::dom::element *parent) {
+shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p, std::shared_ptr<bmml::dom::element> parent) {
   auto name = p.qname();
   auto iter = get_map()->find(name);
   if (iter == get_map()->end()) {
-    return std::make_shared<element>(p, false, parent);
+    return element::create<element>(p, parent);
   }
 
   auto const& element = iter->second;
@@ -416,6 +398,10 @@ shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p, bmml::do
   return element.create(p, parent);
 }
 
+bmml::with_id::with_id(std::shared_ptr<dom::element> parent)
+: bmml::dom::element(parent) {
+}
+
 bmml::dom::id bmml::with_id::id() const {
   auto iter = attributes().find(qname{"id"});
   if (iter != attributes().end()) return dom::id{iter->second};
@@ -423,16 +409,46 @@ bmml::dom::id bmml::with_id::id() const {
   throw missing_attribute{};
 }
 
-void bmml::with_id::id(dom::id const& value) {
+void bmml::with_id::id(std::string const& value) {
   attributes()[qname{"id"}] = value;
 }
 
-bmml::dom::id_ref_to_const bmml::with_id_ref::id() const {
+bmml::dom::id_ref::id_ref(std::string const& id, std::shared_ptr<bmml::dom::element> toplevel)
+: std::string{id}, toplevel{toplevel} {
+}
+    
+std::shared_ptr<bmml::with_id> bmml::dom::id_ref::operator->() const {
+  if (auto e = toplevel->as<with_id>()) if (e->id() == *this) return e;
+                  
+  for (auto child : *toplevel) {
+    auto ref = id_ref{static_cast<std::string>(*this), std::move(child)};
+    if (auto e = ref.operator->()) return std::move(e);
+  }
+                      
+  return {};
+}
+      
+bmml::dom::const_id_ref::const_id_ref(std::string const& id, std::shared_ptr<bmml::dom::element const> toplevel)
+: std::string{id}, toplevel{toplevel} {
+}
+    
+std::shared_ptr<bmml::with_id const> bmml::dom::const_id_ref::operator->() const {
+  if (auto e = toplevel->as<with_id>()) if (e->id() == *this) return e;
+                  
+  for (auto child : *toplevel) {
+    auto ref = const_id_ref{static_cast<std::string>(*this), std::move(child)};
+    if (auto e = ref.operator->()) return std::move(e);
+  }
+ 
+  return {};
+}
+
+bmml::dom::const_id_ref bmml::with_id_ref::id() const {
   auto iter = attributes().find(qname{"id"});
   if (iter != attributes().end()) {
     auto parent = this->parent();
     while (parent && parent->parent()) parent = parent->parent();
-    return dom::id_ref_to_const{iter->second, parent};
+    return dom::const_id_ref{iter->second, parent};
   }            
   throw missing_attribute{};
 }
@@ -447,7 +463,7 @@ bmml::dom::id_ref bmml::with_id_ref::id() {
   throw missing_attribute{};
 }
 
-void bmml::with_id_ref::id(dom::id_ref const& value) {
+void bmml::with_id_ref::id(std::string const& value) {
   attributes()[qname{"id"}] = value;
 }
 
@@ -594,10 +610,10 @@ std::shared_ptr<bmml::score> bmml::parse(std::istream& in, std::string const& na
   parser p{in, name};
         
   p.next_expect(parser::start_element, "score", content::complex);
-  auto result = make_shared<bmml::score>(p, false);
+  auto score = dom::factory::make(p)->as<bmml::score>();
   p.next_expect(parser::end_element, "score");
 
-  return result;
+  return score;
 }
 """
 
