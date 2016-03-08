@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <xml/exception>
 
 #include "bmml.hxx"
 
