@@ -23,10 +23,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER ${PROJECT_BINARY_DIR}/bmml.hxx
 )
+add_library(${PROJECT_NAME}-static STATIC ${PROJECT_BINARY_DIR}/bmml.cxx)
+target_include_directories(${PROJECT_NAME}-static
+  PUBLIC ${Boost_INCLUDE_DIRS} ${LibStudXML_INCLUDE_DIRS}
+)
+target_link_libraries(${PROJECT_NAME}-static
+  PUBLIC ${LibStudXML_STATIC_LIBRARIES}
+)
 
 # Tools
 add_executable(driver driver.cxx)
-target_link_libraries(driver ${PROJECT_NAME})
+target_link_libraries(driver ${PROJECT_NAME}-static)
 
 add_executable(catbmml catbmml.cxx)
 target_link_libraries(catbmml ${PROJECT_NAME})
