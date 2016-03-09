@@ -38,11 +38,12 @@ target_link_libraries(driver ${PROJECT_NAME}-static)
 add_executable(catbmml catbmml.cxx)
 target_link_libraries(catbmml ${PROJECT_NAME})
 
-install(TARGETS ${PROJECT_NAME} catbmml
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static catbmml
   EXPORT ${PROJECT_NAME}
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib COMPONENT Library
+  LIBRARY DESTINATION lib COMPONENT Library
+  RUNTIME DESTINATION bin COMPONENT Runtime
   PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
 )
-install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
+install(EXPORT ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 
