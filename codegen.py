@@ -122,20 +122,20 @@ protected:
 
   using map_type = std::map<xml::qname, element_info>;
 
-  static map_type *get_map() {
-    if (!map) map = new map_type;
+  static map_type &get_map() {
+    if (!map) map = std::make_unique<map_type>();
 
-    return map;
+    return *map;
   }
 
 private:
-  static map_type *map;
+  static std::unique_ptr<map_type> map;
 };
 
 template<typename T>
 struct register_element : factory {
   register_element(xml::qname const& name, xml::content const& content) {
-    get_map()->insert({name, element_info{content, &element::create<T>}});
+    get_map().insert({name, element_info{content, &element::create<T>}});
   }
 };
 
@@ -305,7 +305,7 @@ using xml::qname;
 using xml::serializer;
 using bmml::optional;
 
-bmml::dom::factory::map_type *bmml::dom::factory::map{};
+std::unique_ptr<bmml::dom::factory::map_type> bmml::dom::factory::map{};
 
 namespace {
 
@@ -379,8 +379,9 @@ void bmml::dom::element::serialize(serializer& s, bool start_end) const {
 
 shared_ptr<bmml::dom::element> bmml::dom::factory::make(xml::parser& p, std::shared_ptr<bmml::dom::element> parent) {
   auto name = p.qname();
-  auto iter = get_map()->find(name);
-  if (iter == get_map()->end()) {
+  auto &map = get_map();
+  auto iter = map.find(name);
+  if (iter == map.end()) {
     return element::create<element>(p, parent);
   }
 
