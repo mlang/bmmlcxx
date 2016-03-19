@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.1)
 project(bmmlcxx VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(LibStudXML REQUIRED)
 find_package(Boost REQUIRED)
 find_package(PythonInterp REQUIRED)
@@ -21,7 +21,7 @@ target_link_libraries(${PROJECT_NAME} ${LibStudXML_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION ${PROJECT_VERSION}
-  PUBLIC_HEADER ${PROJECT_BINARY_DIR}/bmml.hxx
+  PUBLIC_HEADER "${PROJECT_SOURCE_DIR}/x3.hpp;${PROJECT_BINARY_DIR}/bmml.hxx"
 )
 add_library(${PROJECT_NAME}-static STATIC ${PROJECT_BINARY_DIR}/bmml.cxx)
 target_include_directories(${PROJECT_NAME}-static
@@ -37,6 +37,9 @@ target_link_libraries(driver ${PROJECT_NAME}-static)
 
 add_executable(catbmml catbmml.cxx)
 target_link_libraries(catbmml ${PROJECT_NAME})
+
+add_executable(x3 x3.cpp)
+target_link_libraries(x3 ${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static catbmml
   EXPORT ${PROJECT_NAME}
