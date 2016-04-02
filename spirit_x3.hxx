@@ -18,19 +18,21 @@ namespace bmml {
                  , typename Attribute>
         bool parse( Iterator& first, Iterator const& last
                   , Context const& context, RContext& rcontext
-                  , Attribute& attr) const {
+                  , Attribute& attr) const
+        {
           boost::spirit::x3::skip_over(first, last, context);
-          if (first != last)
-          if (auto val = std::dynamic_pointer_cast<T>(*first)) {
-            boost::spirit::x3::traits::move_to(val, attr);
-            ++first;
+          if (first != last) {
+            if (auto val = std::dynamic_pointer_cast<T>(*first++)) {
+              boost::spirit::x3::traits::move_to(val, attr);
 
-            return true;
+              return true;
+            }
           }
 
           return false;
         }
       };
+
       template<typename T, typename Predicate>
       struct dynamic_pointer_parser_with_predicate : boost::spirit::x3::parser<
         dynamic_pointer_parser_with_predicate<T, Predicate>
@@ -41,21 +43,22 @@ namespace bmml {
                  , typename Attribute>
         bool parse( Iterator& first, Iterator const& last
                   , Context const& context, RContext& rcontext
-                  , Attribute& attr) const {
+                  , Attribute& attr) const
+        {
           boost::spirit::x3::skip_over(first, last, context);
-          if (first != last)
-          if (auto val = std::dynamic_pointer_cast<T>(*first)) {
-            auto iter = val->begin();
-            if (pred(*val)) {
-              boost::spirit::x3::traits::move_to(val, attr);
-              ++first;
+          if (first != last) {
+            if (auto val = std::dynamic_pointer_cast<T>(*first++)) {
+              if (pred(*val)) {
+                boost::spirit::x3::traits::move_to(val, attr);
 
-              return true;
+                return true;
+              }
             }
           }
 
           return false;
         }
+
         Predicate pred;
       };
 
